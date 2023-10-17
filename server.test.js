@@ -1,33 +1,32 @@
 const request = require('supertest');
 const { server, shutdown } = require('./server');
 const ioClient = require('socket.io-client');
-const { default: mongoose } = require('mongoose');
+const { mongoose, mongo } = require('mongoose');
 
 const SOCKET_SERVER_URL = 'http://localhost:3000';
+const PORT = 3000;
+
+let clientSocket;
 
 describe('Server and Socket.io Tests', () => {
-    let clientSocket;
-
     beforeAll((done) => {
-        clientSocket = ioClient.connect(SOCKET_SERVER_URL, {
-            'reconnection delay': 0,
-            'reopen delay': 0,
-            'force new connection': true
+        server.listen(PORT, () => {
+            clientSocket = ioClient.connect(SOCKET_SERVER_URL, {
+                'reconnection delay': 0,
+                'reopen delay': 0,
+                'force new connection': true
+            });
+            clientSocket.on('connect', done);
         });
-        clientSocket.on('connect', done);
     });
 
-    afterAll(() => {
+    afterAll(async (done) => {
         if (clientSocket.connected) {
             clientSocket.disconnect();
         }
-
-        server.close(() => {
-            mongoose.connection.close(() => {
-                done();
-            });
-        });
-    });
+        await shutdown();
+        done();
+    }, 10000);
 
     test('should establish a Socket.io connection', () => {
         expect(clientSocket.connected).toBeTruthy();

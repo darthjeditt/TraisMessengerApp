@@ -13,18 +13,6 @@ app.get('/', (req, res) => {
     res.status(200).send('Server is running');
 });
 
-mongoose
-    .connect('mongodb://localhost:27017/', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    })
-    .then(() => console.log('MongoDB Connected'))
-    .catch((err) => console.error('Failed to connect to MongoDB', err));
-
-// Serve static files if needed (e.g., frontend files)
-// Uncomment below if you have a 'public' directory with static frontend files.
-// app.use(express.static('public'));
-
 io.on('connection', (socket) => {
     console.log('New User Connected');
 
@@ -39,16 +27,23 @@ io.on('connection', (socket) => {
     });
 });
 
-server.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
-
-function shutdown() {
-    server.close(() => {
-        console.log('HTTP server closed.');
-        mongoose.connection.close();
-        console.log('MongoDB connection closed');
+function connectToDb() {
+    return mongoose.connect('mongodb://localhost:27017/test', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
     });
 }
 
-module.exports = { server, shutdown };
+async function shutdown() {
+    return new Promise((resolve) => {
+        server.close(() => {
+            console.log('HTTP server closed.');
+            mongoose.connection.close().then(() => {
+                console.log('MongoDB connection closed');
+                resolve();
+            });
+        });
+    });
+}
+
+module.exports = { app, server, shutdown, connectToDb };
