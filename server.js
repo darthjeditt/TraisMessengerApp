@@ -1,31 +1,54 @@
 const express = require('express');
-const mongoose = require('mongoose');
+const http = require('http');
+const { default: mongoose } = require('mongoose');
+const socketIO = require('socket.io');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIO(server);
+
 const PORT = 3000;
 
-// Open MongoDB Connection
-async function connectToDb() {
-    try {
-        await mongoose.connect('mongodb://localhost:27017/', { useNewUrlParser: true, useUnifiedTopology: true });
-        console.log('MongoDB Connected');
-    } catch (error) {
-        console.error('Failed to connect to MongoDB', error)
-    }
-}
+app.get('/', (req, res) => {
+    res.status(200).send('Server is running');
+});
 
-// Close MongoDB Connection
-async function disconnectFromDB() {
-    try {
-        await mongoose.connection.close();
-        console.log('MongoDB Disconnected');
-    } catch (error) {
-        console.error('Failed to disconnect from MongoDB', error);
-    }
-}
+mongoose
+    .connect('mongodb://localhost:27017/', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('MongoDB Connected'))
+    .catch((err) => console.error('Failed to connect to MongoDB', err));
 
-app.listen(PORT, () => {
+// Serve static files if needed (e.g., frontend files)
+// Uncomment below if you have a 'public' directory with static frontend files.
+// app.use(express.static('public'));
+
+io.on('connection', (socket) => {
+    console.log('New User Connected');
+
+    socket.on('chat_message', (message) => {
+        // Broadcast the chat message to all other clients
+        io.emit('chat_message', message);
+    });
+
+    // Event for when a user disconnects
+    socket.on('disconnect', () => {
+        console.log('User has disconnected');
+    });
+});
+
+server.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`);
 });
 
-module.exports = {app, connectToDb, disconnectFromDB};
+function shutdown() {
+    server.close(() => {
+        console.log('HTTP server closed.');
+        mongoose.connection.close();
+        console.log('MongoDB connection closed');
+    });
+}
+
+module.exports = { server, shutdown };

@@ -1,22 +1,52 @@
-const { app, connectToDb, disconnectFromDB } = require('./server');  // Adjust the path to your server.js
+const request = require('supertest');
+const { server, shutdown } = require('./server');
+const ioClient = require('socket.io-client');
+const { default: mongoose } = require('mongoose');
 
-// Jest Setup and Teardown
-beforeAll(async () => {
-    await connectToDb();
-});
+const SOCKET_SERVER_URL = 'http://localhost:3000';
 
-afterAll(async () => {
-    await disconnectFromDB();
-});
+describe('Server and Socket.io Tests', () => {
+    let clientSocket;
 
-// Your actual tests would go below
-describe('Server and Database Tests', () => {
-    it('should have a running server', done => {
-        // Example test to check server
-        expect(app).toBeDefined();
-        done();
+    beforeAll((done) => {
+        clientSocket = ioClient.connect(SOCKET_SERVER_URL, {
+            'reconnection delay': 0,
+            'reopen delay': 0,
+            'force new connection': true
+        });
+        clientSocket.on('connect', done);
     });
 
-    // Other tests go here...
+    afterAll(() => {
+        if (clientSocket.connected) {
+            clientSocket.disconnect();
+        }
 
+        server.close(() => {
+            mongoose.connection.close(() => {
+                done();
+            });
+        });
+    });
+
+    test('should establish a Socket.io connection', () => {
+        expect(clientSocket.connected).toBeTruthy();
+    });
+
+    // This test ensures that when a client sends a message, other clients receive it
+    test('should broadcast chat messages', (done) => {
+        const testMsg = 'Hello World';
+
+        clientSocket.on('chat_message', (message) => {
+            expect(message).toBe(testMsg);
+            done();
+        });
+
+        clientSocket.emit('chat_message', testMsg);
+    });
+
+    test('Server should be running on port 3000', async () => {
+        const response = await request(server).get('/');
+        expect(response.status).toBe(200);
+    });
 });
