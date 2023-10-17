@@ -20,12 +20,11 @@ describe('Server and Socket.io Tests', () => {
         });
     });
 
-    afterAll(async (done) => {
-        if (clientSocket.connected) {
+    afterAll(async () => {
+        if (clientSocket && clientSocket.connected) {
             clientSocket.disconnect();
         }
         await shutdown();
-        done();
     }, 10000);
 
     test('should establish a Socket.io connection', () => {
