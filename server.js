@@ -1,69 +1,53 @@
 const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
 const mongoose = require('mongoose');
-const User = require('./models/user');
-
 const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
+const cors = require('cors');
+const morgan = require('morgan');
 
-app.get('/', (req, res) => {
-    res.status(200).send('Server is running');
+const UserSchema = new mongoose.Schema({
+    username: String,
+    password: String, // Note: In a real-world scenario, always hash the password
 });
 
-app.post('/test/user/create', async (req, res) => {
-    try {
-        const user = new User(req.body);
-        await user.save();
-        res.status(200).send(user);
-    } catch (err) {
-        res.status(500).send(err);
+const User = mongoose.model('User', UserSchema);
+const PORT = process.env.PORT || 5000;
+
+app.use(cors());
+app.use(morgan('dev'));
+app.use(express.json());
+
+// Sample API endpoint
+app.get('/api/data', (req, res) => {
+    res.json({ message: "Data from backend!" });
+});
+
+app.post('/register', async (req, res) => {
+    const { username, password } = req.body;
+
+    const existingUser = await User.findOne({ username });
+    if (existingUser) {
+        return res.status(400).send('Username already exists');
     }
+
+    const newUser = new User({ username, password });
+    await newUser.save();
+
+    res.send('User registered successfully');
 });
 
-app.get('/test/user/:id', async (req, res) => {
-    try {
-        const user = await User.findById(req.params.id);
-        if (!user) {
-            return res.status(404).send();
-        }
-        res.status(200).send(user);
-    } catch (err) {
-        res.status(500).send(err);
-    }
-})
-
-io.on('connection', (socket) => {
-    console.log('New User Connected');
-
-    socket.on('chat_message', (message) => {
-        io.emit('chat_message', message);
-    });
-
-    socket.on('disconnect', () => {
-        console.log('User has disconnected');
-    });
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).send('Something went wrong!');
 });
 
-function connectToDb() {
-    return mongoose.connect('mongodb://localhost:27017/test', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true
-    });
-}
-
-async function shutdown() {
-    return new Promise((resolve, reject) => {
-        server.close(() => {
-            mongoose.connection.close().then(() => {
-                resolve();
-            }).catch(err => {
-                reject(err);
-            });
+mongoose.connect('mongodb://localhost:27017/chatApp', { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => {
+        console.log('Connected to MongoDB');
+        app.listen(PORT, () => {
+            console.log(`Server is running on port ${PORT}`);
         });
+    })
+    .catch(err => {
+        console.error('Failed to connect to MongoDB', err);
     });
-}
-
-
-module.exports = { app, server, connectToDb, shutdown};
