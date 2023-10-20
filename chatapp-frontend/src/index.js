@@ -1,11 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import App from './App';
-import './tailwind.css'; // Assuming you have a global CSS file for TailwindCSS
 
-ReactDOM.render(
-    <React.StrictMode>
-        <App />
-    </React.StrictMode>,
-    document.getElementById('root')
-);
+const Root = () => {
+  return (
+    <Router>
+      <Routes>
+        <Route path="/" component={App} />
+        {/* Add other routes as needed */}
+      </Routes>
+    </Router>
+  );
+};
+
+ReactDOM.render(<Root />, document.getElementById('root'));

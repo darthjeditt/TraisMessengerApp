@@ -56,10 +56,9 @@ server.listen(PORT, () => {
 const connectToDbAndStartServer = async () => {
     if (mongoose.connection.readyState === 0) {
         // Check if mongoose is not connected
-        await mongoose.connect('mongodb://localhost:27017/chatAppDB', { // Changed the database name to 'chatAppDB'
+        await mongoose.connect('mongodb://localhost:27017/test', {
             useNewUrlParser: true,
-            useUnifiedTopology: true,
-            useCreateIndex: true // This is to ensure that we can use unique constraints in our schemas
+            useUnifiedTopology: true
         });
     }
 };
