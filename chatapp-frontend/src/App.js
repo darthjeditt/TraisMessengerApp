@@ -1,19 +1,15 @@
-// App.js
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import ChatContainer from './components/chatContainer';
-import Login from './components/login';
-import Register from './components/register';
+import { Routes, Route } from 'react-router-dom';
+import Home from './views/Home';
 
 function App() {
   return (
-    <Router>
+    <div className="container mx-auto p-4">
       <Routes>
-        <Route exact path="/" component={Login} />
-        <Route path="/register" component={Register} />
-        <Route path="/chat" component={ChatContainer} />
+        <Route path="/" element={<Home />} />
+        {/* Add more routes as needed */}
       </Routes>
-    </Router>
+    </div>
   );
 }
 

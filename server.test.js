@@ -29,7 +29,7 @@ describe('Server API Endpoints', () => {
     // Test if the server is running on the correct port
     it('should run on the correct port', () => {
         const actualPort = server.address().port;
-        const expectedPort = process.env.PORT || 5000;
+        const expectedPort = process.env.PORT || 3000;
         expect(actualPort).toEqual(expectedPort);
     });
 
