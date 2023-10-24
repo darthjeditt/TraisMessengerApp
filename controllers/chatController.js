@@ -3,7 +3,7 @@ const Message = require('../models/msgMdl');
 const messageController = {
     getAllMessages: async (req, res) => {
         try {
-            const messages = await Message.find().populate('sender', 'username');
+            const messages = await Message.find();
             res.json(messages);
         } catch (error) {
             console.error("Error fetching messages:", error);
