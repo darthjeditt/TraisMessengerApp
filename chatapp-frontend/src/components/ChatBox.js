@@ -12,7 +12,7 @@ function ChatBox() {
   useEffect(() => {
     const fetchMessages = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/chat/messages`);
+        const response = await axios.get(`${BASE_URL}/api/chat/messages`);
         setMessages(response.data);
       } catch (error) {
         console.error('Error fetching messages:', error);
