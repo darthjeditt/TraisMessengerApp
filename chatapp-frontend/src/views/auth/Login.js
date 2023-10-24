@@ -1,24 +1,46 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import api from '../../utils/api';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { loginUser, setAuthToken } from '../../utils/api';
 
 function Login() {
     const [formData, setFormData] = useState({
         username: '',
         password: ''
     });
+    const navigate = useNavigate();
+    const [animationClass, setAnimationClass] = useState('slide-in');
+
+    useEffect(() => {
+        // Remove the slide-in class after the animation completes
+        const timer = setTimeout(() => {
+            setAnimationClass('');
+        }, 1000); // 1 second delay to match the animation duration
+
+        return () => clearTimeout(timer); // Cleanup on component unmount
+    }, []);
+
+    const handleSignupClick = (e) => {
+        e.preventDefault();
+        setAnimationClass('slide-out');
+        setTimeout(() => {
+            navigate('/signup', { replace: true });
+        }, 1000); // 1 second to allow for the slide and fade effect
+    };
 
     const handleChange = (e) => {
-        setFormData({ ...formData, [e.target.name]: e.target.value });
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/user/login', formData);
+            const response = await loginUser(formData);
             if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
-                // Redirect to the chat page or wherever you want
+                setAuthToken(response.data.token);
+                navigate('/home');
             }
         } catch (error) {
             console.error('Error during login:', error);
@@ -26,7 +48,7 @@ function Login() {
     };
 
     return (
-        <div className="min-h-screen flex bg-gray-100">
+        <div className={`min-h-screen flex bg-gray-100 ${animationClass}`}>
             <div className="w-1/3 bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col justify-center items-center text-white p-10 space-y-5">
                 <h1 className="text-5xl font-extrabold mb-5 tracking-tight">
                     Chat<span className="text-blue-200">App</span>
@@ -37,8 +59,8 @@ function Login() {
                 </p>
             </div>
             <div className="w-2/3 flex items-center justify-center">
-                <div className="bg-white p-12 rounded-xl shadow-2xl w-2/3 space-y-6">
-                    <h2 className="text-3xl font-bold mb-5 text-gray-700">
+                <div className="bg-gradient-to-br from-white to-gray-100 p-12 rounded-xl shadow-xl w-2/3 space-y-6 transform transition-transform hover:scale-105">
+                    <h2 className="text-3xl font-bold mb-5 text-gray-700 tracking-wide">
                         Welcome Back!
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
@@ -52,7 +74,7 @@ function Login() {
                                 placeholder="Username"
                                 value={formData.username}
                                 onChange={handleChange}
-                                className="w-full p-3 border rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-shadow hover:shadow-md"
                             />
                         </div>
                         <div className="mb-4">
@@ -65,12 +87,12 @@ function Login() {
                                 placeholder="Password"
                                 value={formData.password}
                                 onChange={handleChange}
-                                className="w-full p-3 border rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition"
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-shadow hover:shadow-md"
                             />
                         </div>
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-400 via-purple-500 to-blue-500 text-white p-3 rounded-lg hover:from-green-500 hover:to-emerald-700 transition-gradient duration-500 shadow-md hover:shadow-lg transform hover:-translate-y-1"
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-700 text-white p-3 rounded-lg hover:from-green-500 hover:to-emerald-700 transition-gradient duration-500 shadow-md hover:shadow-lg transform hover:-translate-y-1"
                         >
                             Login
                         </button>
@@ -79,7 +101,8 @@ function Login() {
                         Don't have an account?{' '}
                         <Link
                             to="/signup"
-                            className="text-blue-500 hover:underline"
+                            onClick={handleSignupClick}
+                            className="text-blue-500 hover:underline cursor-pointer"
                         >
                             Sign Up
                         </Link>

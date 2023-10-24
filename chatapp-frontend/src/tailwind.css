@@ -1,3 +1,34 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@keyframes slideOut {
+    0% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateX(100%);
+        transition: transform 1s ease-out;
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        transition: transform 1s ease-in;
+        opacity: 1;
+    }
+}
+
+.slide-out {
+    animation: slideOut 1s forwards;
+}
+
+.slide-in {
+    animation: slideIn 1s forwards;
+}

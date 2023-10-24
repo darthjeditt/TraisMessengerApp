@@ -1,18 +1,22 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
-  timeout: 1000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
+    baseURL: 'http://localhost:5000/api',
+    headers: {
+        'Content-Type': 'application/json',
+    },
 });
 
-// Set the AUTH token for any request
-api.interceptors.request.use(function (config) {
-  const token = localStorage.getItem('token');
-  config.headers.Authorization = token ? `Bearer ${token}` : '';
-  return config;
-});
+export const setAuthToken = (token) => {
+    if (token) {
+        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    } else {
+        delete api.defaults.headers.common['Authorization'];
+    }
+};
+
+export const loginUser = (userData) => api.post('/user/login', userData);
+export const signupUser = (userData) => api.post('/user/signup', userData);
+export const fetchMessages = () => api.get('/chat/messages');
 
 export default api;
