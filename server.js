@@ -14,30 +14,31 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:3000",
-        methods: ["GET", "POST"]
+        origin: 'http://localhost:3000',
+        methods: ['GET', 'POST']
     }
 });
 
-
 app.use(bodyParser.json());
-app.use(cors({
-    origin: 'http://localhost:3000'
-}));
+app.use(
+    cors({
+        origin: 'http://localhost:3000'
+    })
+);
 app.use(morgan('dev'));
 app.use(express.json());
 
 const PORT = process.env.PORT || 5000;
 
 io.on('connection', (socket) => {
-    console.log('New client connected');
+    console.log(`${socket.id} connected`);
 
     socket.on('send_message', (message) => {
         io.emit('receive_message', message);
     });
 
     socket.on('disconnect', () => {
-        console.log('Client disconnected');
+        console.log(`${socket.id} disconnected`);
     });
 });
 
@@ -50,7 +51,7 @@ app.use('/api/chat', isAuthenticated, chatRoutes);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).send('Something went wrong!');
+    res.status(500).json({ error: 'Something went wrong!' });
 });
 
 server.listen(PORT, () => {
@@ -58,11 +59,16 @@ server.listen(PORT, () => {
 });
 
 const connectToDbAndStartServer = async () => {
-    if (mongoose.connection.readyState === 0) {
-        await mongoose.connect('mongodb://localhost:27017/test', {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
+    try {
+        if (mongoose.connection.readyState === 0) {
+            await mongoose.connect('mongodb://localhost:27017/test', {
+                useNewUrlParser: true,
+                useUnifiedTopology: true
+            });
+        }
+    } catch (err) {
+        console.log('Failed to connect to MongoDB', err);
+        process.exit(1);
     }
 };
 
