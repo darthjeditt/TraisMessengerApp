@@ -1,6 +1,6 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const User = require('../models/user');
+const User = require('../models/userMdl');
 const router = express.Router();
 
 router.post('/signup', async (req, res) => {
@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/all', async (req, res) => {
+router.get('/users', async (req, res) => {
     try {
         const users = await User.find({}, 'username email'); // This will fetch only the username and email fields for all users
         res.json(users);
