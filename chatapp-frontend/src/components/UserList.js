@@ -7,7 +7,7 @@ function UserList({ setCurrentChatUser }) {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await api.get('/users');
+                const response = await api.get('/user');
                 setUsers(response.data);
             } catch (error) {
                 console.error('Error fetching users:', error);
