@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import UserList from './UserList';
 
 const BASE_URL = 'http://localhost:5000';
 const socket = io(BASE_URL);
@@ -51,15 +52,11 @@ function ChatBox() {
             {/* Users List */}
             <div className="users-list w-1/4 border-r pr-4">
                 <h2 className="text-xl font-bold mb-4">Users</h2>
-                {users.map((user) => (
-                    <div
-                        key={user._id}
-                        onClick={() => setSelectedUser(user)}
-                        className="cursor-pointer hover:bg-gray-100 p-2 rounded"
-                    >
-                        {user.username}
-                    </div>
-                ))}
+
+                <UserList
+                    setCurrentChatUser={setSelectedUser}
+                    currentUser={users.currentUser}
+                />
             </div>
 
             {/* Chat Area */}

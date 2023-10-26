@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import api from '../utils/api';
-import ProfilePopup from './profilePopup'; // Import the new component
+import ProfilePopup from './profilePopup';
+import {FaUser} from 'react-icons/fa';
 
-function UserList({ setCurrentChatUser, currentUser }) { // Add currentUser prop
+function UserList({ setCurrentChatUser, currentUser }) {
+    // Add currentUser prop
     const [users, setUsers] = useState([]);
-    const [showProfile, setShowProfile] = useState(false); // State to manage popup visibility
+    const [showProfile, setShowProfile] = useState(false);
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -21,27 +23,30 @@ function UserList({ setCurrentChatUser, currentUser }) { // Add currentUser prop
 
     return (
         <div className="bg-white p-4 rounded shadow-md">
-            <h2 className="text-xl mb-4">Users</h2>
-            <ul>
-                {users.length > 0 ? (
-                    users.map((user) => (
-                        <li
-                            key={user._id}
-                            className="text-gray-700 border-b p-2 cursor-pointer hover:bg-gray-200"
+            {users && users.length > 0 ? (
+                users.map((user, index) => {
+                    if (!user) return null; // Check if user is defined before accessing its properties
+                    return (
+                        <div
+                            key={index}
                             onClick={() => setCurrentChatUser(user)}
                         >
                             {user.username}
-                        </li>
-                    ))
-                ) : (
-                    <p className="text-gray-500">No users available.</p>
-                )}
-            </ul>
-            <div onClick={() => setShowProfile(true)}> 
-                {/* Profile Icon - Replace with your icon */}
-                🚹 
+                        </div>
+                    );
+                })
+            ) : (
+                <p>No users available</p>
+            )}
+            {showProfile && (
+                <ProfilePopup
+                    user={currentUser}
+                    onClose={() => setShowProfile(false)}
+                />
+            )}
+            <div onClick={() => setShowProfile(true)}>
+                <FaUser size={32} style={{ cursor: 'pointer' }} />
             </div>
-            {showProfile && <ProfilePopup user={currentUser} onClose={() => setShowProfile(false)} />}
         </div>
     );
 }
