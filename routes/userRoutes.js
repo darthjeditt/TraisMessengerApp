@@ -31,7 +31,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-router.get('/users', async (req, res) => {
+router.get('/user', async (req, res) => {
     try {
         const users = await User.find({}, 'username email'); // This will fetch only the username and email fields for all users
         res.json(users);
