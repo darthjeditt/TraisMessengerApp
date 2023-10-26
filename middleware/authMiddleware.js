@@ -27,4 +27,20 @@ const isAuthenticated = async (req, res, next) => {
     }
 };
 
+module.exports = (req, res, next) => {
+    const token = req.header('x-auth-token'); // Assuming the token is sent in the 'x-auth-token' header
+
+    if (!token) {
+        return res.status(401).send('No token, authorization denied');
+    }
+
+    try {
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY'); // Use the same secret key as in the login route
+        req.user = decoded;
+        next();
+    } catch (err) {
+        res.status(401).send('Token is not valid');
+    }
+};
+
 module.exports = isAuthenticated;

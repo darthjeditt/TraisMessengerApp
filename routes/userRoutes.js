@@ -2,6 +2,7 @@ const express = require('express');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userMdl');
 const router = express.Router();
+const isAuthenticated = require('../middleware/authMiddleware');
 
 router.post('/signup', async (req, res) => {
     try {
@@ -38,6 +39,16 @@ router.get('/', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).send('Error fetching users');
+    }
+});
+
+router.get('/me', isAuthenticated, async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id).select('-password'); // Exclude password from the result
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).send('Error fetching user');
     }
 });
 
