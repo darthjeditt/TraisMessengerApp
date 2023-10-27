@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv')
 // const User = require('../models/userMdl');
+
+dotenv.config();
 
 const isAuthenticated = (req, res, next) => {
     try {
@@ -9,7 +12,7 @@ const isAuthenticated = (req, res, next) => {
         }
 
         const token = authHeader.replace('Bearer ', '');
-        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY'); // Replace 'YOUR_SECRET_KEY' with your actual secret key
+        const decoded = jwt.verify(token, process.env.JWT_TOKEN); // Replace 'YOUR_SECRET_KEY' with your actual secret key
 
         req.user = decoded;
         next();
@@ -26,7 +29,7 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY'); // Use the same secret key as in the login route
+        const decoded = jwt.verify(token, process.env.JWT_TOKEN); // Use the same secret key as in the login route
         req.user = decoded;
         next();
     } catch (err) {

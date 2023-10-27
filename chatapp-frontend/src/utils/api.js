@@ -10,13 +10,17 @@ export const api = axios.create({
 });
 
 export const getCurrentUser = () => {
-    const token = localStorage.getItem('token'); // Assuming you're storing the token in local storage
+    const token = localStorage.getItem('token');
+    if (!token) {
+        throw new Error('Token not found in local storage');
+    }
     return axios.get('/api/user/me', {
         headers: {
             'Authorization': `Bearer ${token}`
         }
     });
 };
+
 export const setAuthToken = (token) => {
     if (token) {
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;

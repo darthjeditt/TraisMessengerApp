@@ -1,6 +1,9 @@
 const User = require('../models/userMdl');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const dotenv = require('dotenv');
+
+dotenv.config();
 
 exports.registerUser = async (req, res, next) => {
     const existingUser = await User.findOne({ email: req.body.email });
@@ -43,7 +46,7 @@ exports.loginUser = async (req, res) => {
             console.log(`Password mismatch for username: ${username}.`);
             return res.status(401).json({ msg: 'Invalid credentials' });
         }
-        const token = jwt.sign({ id: user._id }, 'your-secret-key', { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         res.json({ token });
         if (user) {
             console.log(`${username} has just logged in.`)
@@ -58,6 +61,7 @@ exports.getCurrentUser = async (req, res, next) => {
     try {
         const user = await User.findById(req.userId);
         if (!user) {
+            console.error('User not found in the database');
             return res.status(404).json({
                 message: 'User not found!',
             });
