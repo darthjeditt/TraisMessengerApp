@@ -1,29 +1,18 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userMdl');
+// const User = require('../models/userMdl');
 
 const isAuthenticated = async (req, res, next) => {
+    const token = req.header('Authorization').replace('Bearer ', '');
+    if (!token) {
+        return res.status(401).send({ message: 'Authentication token missing' });
+    }
+
     try {
-        // Check if the authorization header exists
-        if (!req.headers.authorization) {
-            throw new Error('Authorization header missing');
-        }
-
-        const token = req.headers.authorization.replace('Bearer ', '');
-
-        // Use an environment variable for the JWT secret
-        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback_secret_key');
-        
-        const user = await User.findById(decoded._id);
-        
-        if (!user) {
-            throw new Error('User not found');
-        }
-
-        req.user = user;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.userId = decoded.userId;  // Set the userId on the request object
         next();
     } catch (error) {
-        console.error('Authentication error:', error.message); // Log the error for debugging
-        res.status(401).send({ error: 'Please authenticate' });
+        res.status(401).send({ message: 'Invalid token' });
     }
 };
 

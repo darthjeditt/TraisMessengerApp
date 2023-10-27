@@ -2,7 +2,7 @@ const express = require('express');
 const User = require('../models/userMdl');
 const router = express.Router();
 const userController = require('../controllers/userController');
-// const isAuthenticated = require('../middleware/authMiddleware');
+const isAuthenticated = require('../middleware/authMiddleware');
 
 router.post('/signup', userController.registerUser);
 
@@ -18,6 +18,6 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/me', userController.getCurrentUser);
+router.get('/me', isAuthenticated, userController.getCurrentUser);
 
 module.exports = router;
