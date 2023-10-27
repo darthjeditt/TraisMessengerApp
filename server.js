@@ -31,14 +31,14 @@ app.use(express.json());
 const PORT = process.env.PORT || 5000;
 
 io.on('connection', (socket) => {
-    console.log(`${socket.username} connected`);
+    console.log(`${socket.id} connected`);
 
     socket.on('send_message', (message) => {
         io.emit('receive_message', message);
     });
 
     socket.on('disconnect', () => {
-        console.log(`${socket.username} disconnected`);
+        console.log(`${socket.id} disconnected`);
     });
 });
 

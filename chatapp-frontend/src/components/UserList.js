@@ -15,12 +15,12 @@ function UserList() {
                     'http://localhost:5000/api/user'
                 );
                 setUsers(response.data);
-                // Assuming the last user in the list is the current user for demonstration purposes
-                setCurrentUser(response.data[response.data.length - 1]);
                 axios
                     .get('/api/user/me', {
                         headers: {
-                            'x-auth-token': localStorage.getItem('token') // Assuming the token is stored in local storage
+                            Authorization: `Bearer ${localStorage.getItem(
+                                'token'
+                            )}`
                         }
                     })
                     .then((response) => {
