@@ -1,18 +1,20 @@
 const jwt = require('jsonwebtoken');
 // const User = require('../models/userMdl');
 
-const isAuthenticated = async (req, res, next) => {
-    const token = req.header('Authorization').replace('Bearer ', '');
-    if (!token) {
-        return res.status(401).send({ message: 'Authentication token missing' });
-    }
-
+const isAuthenticated = (req, res, next) => {
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.userId;  // Set the userId on the request object
+        const authHeader = req.header('Authorization');
+        if (!authHeader) {
+            return res.status(401).send({ error: 'Authentication required.' });
+        }
+
+        const token = authHeader.replace('Bearer ', '');
+        const decoded = jwt.verify(token, 'YOUR_SECRET_KEY'); // Replace 'YOUR_SECRET_KEY' with your actual secret key
+
+        req.user = decoded;
         next();
     } catch (error) {
-        res.status(401).send({ message: 'Invalid token' });
+        res.status(401).send({ error: 'Authentication failed.' });
     }
 };
 

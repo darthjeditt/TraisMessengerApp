@@ -3,19 +3,19 @@ import axios from 'axios';
 const BASE_URL = 'http://localhost:5000/api';
 
 export const api = axios.create({
-    baseURL: 'http://localhost:5000/api',
+    baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json'
     }
 });
 
 export const getCurrentUser = () => {
-    try {
-        const response = axios.get(`${BASE_URL}/user/me`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const token = localStorage.getItem('token'); // Assuming you're storing the token in local storage
+    return axios.get('/api/user/me', {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    });
 };
 export const setAuthToken = (token) => {
     if (token) {
@@ -24,6 +24,10 @@ export const setAuthToken = (token) => {
         delete api.defaults.headers.common['Authorization'];
     }
 };
+
+export const getUsers = () => {
+    return axios.get(`${BASE_URL}/user`)
+}
 
 export const loginUser = (userData) => api.post('/user/login', userData);
 export const signupUser = (userData) => api.post('/user/signup', userData);
