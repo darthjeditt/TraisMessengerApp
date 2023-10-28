@@ -5,7 +5,7 @@ const BASE_URL = 'http://localhost:5000/api';
 export const api = axios.create({
     baseURL: BASE_URL,
     headers: {
-        'Content-Type': 'application/json'
+        Authorization: `Bearer ${localStorage.getItem('token')}`
     }
 });
 
@@ -14,11 +14,7 @@ export const getCurrentUser = () => {
     if (!token) {
         throw new Error('Token not found in local storage');
     }
-    return axios.get('/api/user/me', {
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
-    });
+    return axios.get('/user/me');
 };
 
 export const setAuthToken = (token) => {
@@ -30,8 +26,8 @@ export const setAuthToken = (token) => {
 };
 
 export const getUsers = () => {
-    return axios.get(`${BASE_URL}/user`)
-}
+    return axios.get(`${BASE_URL}/user`);
+};
 
 export const loginUser = (userData) => api.post('/user/login', userData);
 export const signupUser = (userData) => api.post('/user/signup', userData);

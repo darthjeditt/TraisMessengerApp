@@ -10,7 +10,7 @@ exports.registerUser = async (req, res, next) => {
 
     if (existingUser) {
         return res.status(400).json({
-            message: 'User with this email already exists!',
+            message: 'User with this email already exists!'
         });
     }
 
@@ -19,14 +19,14 @@ exports.registerUser = async (req, res, next) => {
     const newUser = new User({
         username: req.body.username,
         email: req.body.email,
-        password: hashedPassword,
+        password: hashedPassword
     });
 
     try {
         await newUser.save();
-        console.log(`User registered: ${newUser.username}`);  // <-- Added log
+        console.log(`User registered: ${newUser.username}`); // <-- Added log
         res.status(201).json({
-            message: 'User registered successfully!',
+            message: 'User registered successfully!'
         });
     } catch (error) {
         next(error);
@@ -46,10 +46,12 @@ exports.loginUser = async (req, res) => {
             console.log(`Password mismatch for username: ${username}.`);
             return res.status(401).json({ msg: 'Invalid credentials' });
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: '1h'
+        });
         res.json({ token });
         if (user) {
-            console.log(`${username} has just logged in.`)
+            console.log(`${username} has just logged in.`);
         }
     } catch (err) {
         console.error(err.message);
@@ -57,17 +59,20 @@ exports.loginUser = async (req, res) => {
     }
 };
 
-exports.getCurrentUser = async (req, res, next) => {
+exports.getCurrentUser = async (req, res) => {
     try {
-        const user = await User.findById(req.userId);
+        const user = await User.findById(req.user.id).select('-password');
         if (!user) {
             console.error('User not found in the database');
-            return res.status(404).json({
-                message: 'User not found!',
+            return res.status(404).send({
+                message: 'User not found!'
             });
         }
-        res.json(user);
+        res.send(user);
     } catch (error) {
-        next(error);
+        console.error('User not found in the database', error);
+        return res.status(500).send({
+            message: 'Internal Server Error'
+        });
     }
 };

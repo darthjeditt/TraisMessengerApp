@@ -12,7 +12,7 @@ const isAuthenticated = (req, res, next) => {
         }
 
         const token = authHeader.replace('Bearer ', '');
-        const decoded = jwt.verify(token, process.env.JWT_TOKEN); // Replace 'YOUR_SECRET_KEY' with your actual secret key
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace 'YOUR_SECRET_KEY' with your actual secret key
 
         req.user = decoded;
         next();
@@ -29,7 +29,7 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_TOKEN); // Use the same secret key as in the login route
+        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use the same secret key as in the login route
         req.user = decoded;
         next();
     } catch (err) {
