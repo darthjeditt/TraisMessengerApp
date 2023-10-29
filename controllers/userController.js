@@ -49,7 +49,10 @@ exports.loginUser = async (req, res) => {
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
             expiresIn: '1h'
         });
+        console.log('Backend Generated Token:', token);
+
         res.json({ token });
+
         if (user) {
             console.log(`${username} has just logged in.`);
         }
