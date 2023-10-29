@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/api';
-
 export const api = axios.create({
-    baseURL: BASE_URL,
+    baseURL: 'http://localhost:5000/api',
     headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`
     }
@@ -14,7 +12,7 @@ export const getCurrentUser = () => {
     if (!token) {
         throw new Error('Token not found in local storage');
     }
-    return axios.get(`${BASE_URL}/user/me`);
+    return axios.get(`/user/me`);
 };
 
 export const setAuthToken = (token) => {
@@ -26,9 +24,9 @@ export const setAuthToken = (token) => {
 };
 
 export const getUsers = () => {
-    return axios.get(`${BASE_URL}/user`);
+    return axios.get(`/user`);
 };
 
-export const loginUser = (userData) => api.post(`${BASE_URL}/user/login`, userData);
-export const signupUser = (userData) => api.post(`${BASE_URL}/user/signup`, userData);
-export const fetchMessages = () => api.get(`${BASE_URL}/chat/messages`);
+export const loginUser = (userData) => api.post(`/user/login`, userData);
+export const signupUser = (userData) => api.post(`/user/signup`, userData);
+export const fetchMessages = () => api.get(`/chat/messages`);
