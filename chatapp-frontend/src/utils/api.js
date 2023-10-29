@@ -14,7 +14,7 @@ export const getCurrentUser = () => {
     if (!token) {
         throw new Error('Token not found in local storage');
     }
-    return axios.get('/user/me');
+    return axios.get(`${BASE_URL}/user/me`);
 };
 
 export const setAuthToken = (token) => {
@@ -29,6 +29,6 @@ export const getUsers = () => {
     return axios.get(`${BASE_URL}/user`);
 };
 
-export const loginUser = (userData) => api.post('/user/login', userData);
-export const signupUser = (userData) => api.post('/user/signup', userData);
-export const fetchMessages = () => api.get('/chat/messages');
+export const loginUser = (userData) => api.post(`${BASE_URL}/user/login`, userData);
+export const signupUser = (userData) => api.post(`${BASE_URL}/user/signup`, userData);
+export const fetchMessages = () => api.get(`${BASE_URL}/chat/messages`);
