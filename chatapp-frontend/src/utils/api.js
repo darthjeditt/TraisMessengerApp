@@ -17,12 +17,11 @@ export const getCurrentUser = () => {
     return axios.get(`${BASE_URL}/user/me`);
 };
 
-export const setAuthToken = (token) => {
-    const tokenToSend = localStorage.getItem('token');
-    console.log('Token to Send in API Request:', tokenToSend);
-    console.log('Token to Send in API Request2:', token);
+export const setAuthToken = () => {
+    const token = localStorage.getItem('token');
 
     if (token) {
+        console.log('Token to Send in API Request:', token);
         api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
     } else {
         delete api.defaults.headers.common['Authorization'];
@@ -33,6 +32,8 @@ export const getUsers = () => {
     return axios.get(`${BASE_URL}/user`);
 };
 
-export const loginUser = (userData) => api.post(`${BASE_URL}/user/login`, userData);
-export const signupUser = (userData) => api.post(`${BASE_URL}/user/signup`, userData);
+export const loginUser = (userData) =>
+    api.post(`${BASE_URL}/user/login`, userData);
+export const signupUser = (userData) =>
+    api.post(`${BASE_URL}/user/signup`, userData);
 export const fetchMessages = () => api.get(`${BASE_URL}/chat/messages`);

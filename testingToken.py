@@ -1,7 +1,20 @@
-test1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY1Mzc5MWU3OThhN2U4MjI4YjgwZjcwYSIsImlhdCI6MTY5ODU3NjQwNCwiZXhwIjoxNjk4NTgwMDA0fQ.49wyrI24wEj-xB5F4NgCrpWxRcqUFPPnOuamA5QNNC0'
-
-test2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NTM3MmEwZjZmNjZjMTAxNTMyZjA5OGMiLCJpYXQiOjE2OTgxMjc4MjgsImV4cCI6MTY5ODEzMTQyOH0.boBaFdfwpdvCmWmE5m-fFcxm-NLmOeI8RhfVNdHe2II'
 
 
+def test(n: int) -> int:
+    return n+n
 
-print(test1 == test2)
+if __name__ == '__main__':
+    print(test(2))
+
+
+Int = 1
+Str = 'str'
+Dic = {1: 'str'}
+Lst = [1,2,3,'Four']
+
+for n in Lst:
+    print(n)
+
+while Int < len(Lst):
+    print(1+1)
+    Int += 1

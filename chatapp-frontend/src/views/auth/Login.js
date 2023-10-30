@@ -40,9 +40,8 @@ function Login() {
             const response = await loginUser(formData);
 
             if (response.data.token) {
+                localStorage.setItem('token', response.data.token);
                 setAuthToken(response.data.token);
-                // localStorage.setItem('token', response.data.token);
-                console.log('Token: ', response.data.token);
                 navigate('/home');
             }
         } catch (error) {
