@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser, setAuthToken } from '../../utils/api';
+import { loginUser } from '../../utils/api';
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -41,7 +41,6 @@ function Login() {
 
             if (response.data.token) {
                 localStorage.setItem('token', response.data.token);
-                setAuthToken(response.data.token);
                 navigate('/home');
             }
         } catch (error) {
