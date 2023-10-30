@@ -12,19 +12,18 @@ export const api = axios.create({
 export const getCurrentUser = () => {
     const token = localStorage.getItem('token');
 
-    console.log(':token:', token);
     if (!token) {
         throw new Error('Token not found in local storage');
     }
-    return axios.get(`${BASE_URL}/user/me`);
+    return api.get(`/user/me`);  // Use the custom api instance here
 };
 
 export const getUsers = () => {
-    return axios.get(`${BASE_URL}/user`);
+    return api.get(`/user`);
 };
 
 export const loginUser = (userData) =>
-    api.post(`${BASE_URL}/user/login`, userData);
+    api.post(`/user/login`, userData);
 export const signupUser = (userData) =>
-    api.post(`${BASE_URL}/user/signup`, userData);
-export const fetchMessages = () => api.get(`${BASE_URL}/chat/messages`);
+    api.post(`/user/signup`, userData);
+export const fetchMessages = () => api.get(`/chat/messages`);
