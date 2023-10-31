@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
 import UserList from './UserList';
 
@@ -6,12 +7,13 @@ const BASE_URL = 'http://localhost:5000';
 const socket = io(BASE_URL);
 
 function ChatBox() {
+    const { userId } = useParams();
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
     useEffect(() => {
         socket.on('receive_message', (message) => {
-            setMessages(prevMessages => [...prevMessages, message]);
+            setMessages((prevMessages) => [...prevMessages, message]);
         });
 
         return () => {
@@ -33,10 +35,17 @@ function ChatBox() {
                 <div className="messages-container mb-4">
                     {messages.length > 0 ? (
                         messages.map((message, index) => (
-                            <p key={index} className="text-gray-700 border-b p-2">{message}</p>
+                            <p
+                                key={index}
+                                className="text-gray-700 border-b p-2"
+                            >
+                                {message}
+                            </p>
                         ))
                     ) : (
-                        <p className="text-gray-500">No messages to display. Start a conversation!</p>
+                        <p className="text-gray-500">
+                            No messages to display. Start a conversation!
+                        </p>
                     )}
                 </div>
                 <div className="input-container flex items-center">

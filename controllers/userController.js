@@ -2,6 +2,7 @@ const User = require('../models/userMdl');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
+const Message = require('../models/msgMdl');
 
 dotenv.config();
 
@@ -79,3 +80,4 @@ exports.getCurrentUser = async (req, res) => {
         });
     }
 };
+

@@ -25,4 +25,6 @@ export const getUsers = () => {
 export const loginUser = (userData) => api.post(`/user/login`, userData);
 export const signupUser = (userData) => api.post(`/user/signup`, userData);
 
-export const fetchMessages = () => api.get(`/messages`);
+export const fetchChatHistory = (currentUserId, selectedUserId) => {
+    return api.get(`/chat/history/${currentUserId}/${selectedUserId}`);
+};

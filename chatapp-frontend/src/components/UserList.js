@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { FaUserCircle } from 'react-icons/fa'; // Importing the user icon
 import ProfilePopup from './profilePopup';
-import { getCurrentUser, getUsers, fetchMessages } from '../utils/api';
+import { getCurrentUser, getUsers } from '../utils/api';
 
 function UserList() {
     const [users, setUsers] = useState([]);
+    const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState(null);
-    const [chatMessages, setChatMessages] = useState([]);
     const [showProfilePopup, setShowProfilePopup] = useState(false);
 
     useEffect(() => {
@@ -30,27 +31,28 @@ function UserList() {
                 console.error('Error fetching current user:', error);
             }
         };
-        const fetchChatMessages = async () => {
-            try {
-                const response = await fetchMessages();
-                if (response) {
-                    setChatMessages(response);
-                    console.log(`response: ${response.data}`);
-                }
-            } catch (err) {
-                console.error('Error fetching messages', err);
-            }
-        };
-        fetchChatMessages();
         fetchUsers();
         fetchCurrentUser();
     }, []);
+
+    const handleUserClick = (userId) => {
+        try {
+            if (navigate) {
+                navigate(`chat/${userId}`);
+            }
+        } catch (err) {
+            console.error('Couldnt get chat history', err);
+        }
+    };
 
     return (
         <div>
             <ul>
                 {users.map((user) => (
-                    <li key={user._id}>
+                    <li
+                        key={user._id}
+                        onClick={() => handleUserClick(user._id)}
+                    >
                         {user.username}
                     </li>
                 ))}
