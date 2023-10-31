@@ -1,5 +1,6 @@
 const Message = require('../models/msgMdl');
-const User = require('../models/userMdl')
+const mongoose = require('mongoose');
+const User = require('../models/userMdl');
 
 const getAllMessages = async (req, res) => {
     try {
@@ -24,28 +25,48 @@ const postMessage = async (req, res) => {
 };
 
 const getChatHistory = async (req, res) => {
+    const { currentUserId, selectedUserId } = req.params;
+
+    // Check if both user IDs are provided
+    if (
+        !mongoose.Types.ObjectId.isValid(currentUserId) ||
+        !mongoose.Types.ObjectId.isValid(selectedUserId)
+    ) {
+        return res.status(400).json({
+            success: false,
+            message:
+                'Both currentUserId and selectedUserId must be valid ObjectIds.'
+        });
+    }
+
     try {
-        // Fetch the user based on the username
-        const user = await User.findOne({ username: req.body.username });
-
-        console.log(`this is the user: ${user}`)
-        
-        if (!user) {
-            return res.status(404).json({ error: 'User not found' });
-        }
-
-        // Now use the user's ObjectId to fetch the chat history
+        // Fetch messages between the two users
         const messages = await Message.find({
             $or: [
-                { sender: user._id, receiver: req.params.selectedUserId },
-                { receiver: user._id, sender: req.params.selectedUserId }
+                { sender: currentUserId, receiver: selectedUserId },
+                { sender: selectedUserId, receiver: currentUserId }
             ]
         });
 
-        res.json(messages);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Internal server error' });
+        // If no messages are found, return a message indicating so
+        if (!messages.length) {
+            return res.status(404).json({
+                success: false,
+                message: 'No chat history found between the two users.'
+            });
+        }
+
+        // If messages are found, return them
+        return res.status(200).json({
+            success: true,
+            data: messages
+        });
+    } catch (error) {
+        console.error('Error fetching chat history: ', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error. Unable to fetch chat history.'
+        });
     }
 };
 
