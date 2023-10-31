@@ -25,9 +25,9 @@ export const getUsers = () => {
 export const loginUser = (userData) => api.post(`/user/login`, userData);
 export const signupUser = (userData) => api.post(`/user/signup`, userData);
 
-export const fetchChatHistory = async (currentUsername, selectedUserId) => {
+export const fetchChatHistory = (currentUsername, selectedUserId) => {
     try {
-        const response = await axios.get(`/api/chat/history/${currentUsername}/${selectedUserId}`);
+        const response =  api.get(`/chat/history/${currentUsername}/${selectedUserId}`);
         return response;
     } catch (error) {
         console.error('Error fetching chat history:', error);

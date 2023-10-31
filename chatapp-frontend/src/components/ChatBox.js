@@ -27,20 +27,21 @@ function ChatBox({ selectedUserId }) {
     useEffect(() => {
         const getChatHistory = async () => {
             if (selectedUserId && currentUser) {
-                console.log(`Current User is: ${currentUser._id} and Selected user is: ${selectedUserId}`)
+                console.log(`Current User is: ${currentUser.username} and Selected user is: ${selectedUserId}`)
                 try {
                     const response = await fetchChatHistory(
                         currentUser.username, // Assuming currentUser has a direct username property
                         selectedUserId
                     );
+                    console.log(`response: ${response}`)
                     setMessages(response.data);
                 } catch (err) {
-                    console.error('Error fetching chat history: ', err);
+                    console.error('Error fetching chat history(frontend): ', err);
                 }
             }
         };
         getChatHistory();
-    }, [selectedUserId, currentUser]);
+    }, [currentUser, selectedUserId]);
 
 
     useEffect(() => {
