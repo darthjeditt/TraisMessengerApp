@@ -3,7 +3,7 @@ import { FaUserCircle } from 'react-icons/fa';
 import ProfilePopup from './profilePopup';
 import { fetchUsers, getCurrentUser } from '../utils/api';
 
-const UserList = () => {
+const UserList = ({ setSelectedUserId }) => {
     const [users, setUsers] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
     const [showProfilePopup, setShowProfilePopup] = useState(false);
@@ -36,13 +36,17 @@ const UserList = () => {
         setShowProfilePopup(!showProfilePopup);
     };
 
+    const handleUserClick = (userId) => {
+        setSelectedUserId(userId);
+    };
+
     return (
         <div className="user-list">
             {users.map((user) => (
                 <div
                     className={'cursor-pointer'}
                     key={user._id}
-                    onClick={() => console.log(user.username)}
+                    onClick={() => handleUserClick(user._id)}
                 >
                     {user.username}
                 </div>
