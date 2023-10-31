@@ -4,11 +4,11 @@ const { getAllMessages, postMessage, getChatHistory } = require('../controllers/
 const isAuthenticated = require('../middleware/authMiddleware');
 
 // Get all chat messages
-router.get('chat/messages', isAuthenticated, getAllMessages);
+router.get('/messages', isAuthenticated, getAllMessages);
 
 // Add a new chat message
-router.post('chat/messages', isAuthenticated, postMessage);
+router.post('/messages', isAuthenticated, postMessage);
 
-router.get('/chat/history/:currentUserId/:selectedUserId', isAuthenticated, getChatHistory)
+router.get('/history/:currentUserId/:selectedUserId', isAuthenticated, getChatHistory)
 
 module.exports = router;

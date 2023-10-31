@@ -8,15 +8,6 @@ const UserList = ({ onUserClick }) => {
     const [currentUser, setCurrentUser] = useState(null);
     const [showProfilePopup, setShowProfilePopup] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            await fetchUsers();
-            await fetchCurrentUser();
-        };
-
-        fetchData();
-    }, []);
-
     const fetchUsers = async () => {
         try {
             const response = await getUsers();
@@ -43,17 +34,30 @@ const UserList = ({ onUserClick }) => {
         setShowProfilePopup(false);
     };
 
+    useEffect(() => {
+        const fetchData = async () => {
+            await fetchUsers();
+            await fetchCurrentUser();
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <div>
             <ul>
-                {users.map(user => (
-                    <li className='cursor-pointer' key={user._id} onClick={() => onUserClick(user._id)}>
+                {users.map((user) => (
+                    <li
+                        className="cursor-pointer"
+                        key={user._id}
+                        onClick={() => onUserClick(user._id)}
+                    >
                         {user.username}
                     </li>
                 ))}
             </ul>
             {currentUser && (
-                <div className='cursor-pointer' onClick={handleProfileClick}>
+                <div className="cursor-pointer" onClick={handleProfileClick}>
                     <FaUserCircle size={40} />
                 </div>
             )}

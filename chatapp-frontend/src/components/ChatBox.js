@@ -1,20 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import io from 'socket.io-client';
-import { fetchChatHistory } from '../utils/api';
+import { fetchChatHistory, getCurrentUser } from '../utils/api';
 
 const BASE_URL = 'http://localhost:5000';
 const socket = io(BASE_URL);
 
-function ChatBox({ selectedUserId, currentUser }) {
+function ChatBox({ selectedUserId }) {
+    const [currentUser, setCurrentUser] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
+    // Fetch the current user
+    useEffect(() => {
+        const fetchCurrentUser = async () => {
+            try {
+                const response = await getCurrentUser();
+                setCurrentUser(response.data);
+            } catch (err) {
+                console.error('Error fetching current user:', err);
+            }
+        };
+        fetchCurrentUser();
+    }, []);
+
+    // Fetch the chat history
     useEffect(() => {
         const getChatHistory = async () => {
             if (selectedUserId && currentUser) {
+                console.log(`Current User is: ${currentUser._id} and Selected user is: ${selectedUserId}`)
                 try {
                     const response = await fetchChatHistory(
-                        currentUser.id,
+                        currentUser.username, // Assuming currentUser has a direct username property
                         selectedUserId
                     );
                     setMessages(response.data);
@@ -23,9 +39,9 @@ function ChatBox({ selectedUserId, currentUser }) {
                 }
             }
         };
-
-            getChatHistory();
+        getChatHistory();
     }, [selectedUserId, currentUser]);
+
 
     useEffect(() => {
         socket.on('receive_message', (message) => {
