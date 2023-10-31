@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { loginUser } from '../../utils/api';
+import { login } from '../../utils/api';
 
 function Login() {
     const [formData, setFormData] = useState({
@@ -37,10 +37,8 @@ function Login() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await loginUser(formData);
-
-            if (response.data.token) {
-                localStorage.setItem('token', response.data.token);
+            const user = await login(formData);
+            if (user) {
                 navigate('/home');
             }
         } catch (error) {

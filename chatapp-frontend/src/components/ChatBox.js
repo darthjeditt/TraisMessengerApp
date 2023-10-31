@@ -1,102 +1,43 @@
 import React, { useState, useEffect } from 'react';
-import io from 'socket.io-client';
-import { fetchChatHistory, getCurrentUser } from '../utils/api';
+import { fetchChatHistory } from '../utils/api';
 
-const BASE_URL = 'http://localhost:5000';
-const socket = io(BASE_URL);
+const ChatBox = ({ selectedUser }) => {
+    const [chatHistory, setChatHistory] = useState([]);
+    const [message, setMessage] = useState('');
+    const [error, setError] = useState(null);
+    const currentUser = localStorage.getItem('currentUser'); // Assuming you store the current user in local storage
 
-function ChatBox({ selectedUserId }) {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [messages, setMessages] = useState([]);
-    const [newMessage, setNewMessage] = useState('');
-
-    // Fetch the current user
     useEffect(() => {
-        const fetchCurrentUser = async () => {
-            try {
-                const response = await getCurrentUser();
-                setCurrentUser(response.data);
-            } catch (err) {
-                console.error('Error fetching current user:', err);
-            }
-        };
-        fetchCurrentUser();
-    }, []);
-
-    // Fetch the chat history
-    useEffect(() => {
-        const getChatHistory = async () => {
-            try {
-                const response = await fetchChatHistory(
-                    currentUser._id,
-                    selectedUserId
-                );
-                setMessages(response.data);
-            } catch (err) {
-                if (err.response && err.response.status === 400) {
-                    console.error('Invalid user IDs provided.');
-                } else {
-                    console.error('Error fetching chat history:', err);
+        if (currentUser && selectedUser) {
+            const getHistory = async () => {
+                try {
+                    const history = await fetchChatHistory(currentUser._id, selectedUser._id);
+                    setChatHistory(history);
+                } catch (err) {
+                    setError(err.message);
                 }
-            }
-        };
+            };
 
-        getChatHistory();
-    }, [currentUser, selectedUserId]);
-
-    useEffect(() => {
-        socket.on('receive_message', (message) => {
-            setMessages((prevMessages) => [...prevMessages, message]);
-        });
-
-        return () => {
-            socket.off('receive_message');
-        };
-    }, []);
-
-    const handleSendMessage = () => {
-        if (newMessage.trim() !== '') {
-            socket.emit('send_message', newMessage);
-            setNewMessage('');
+            getHistory();
         }
+    }, [currentUser, selectedUser]);
+
+    const handleSendMessage = async () => {
+        // Logic to send the message to the backend and update the chat history
     };
 
     return (
-        <div className="flex">
-            <div className="chatbox-container p-4 bg-white rounded shadow-md">
-                <div className="messages-container mb-4">
-                    {messages.length > 0 ? (
-                        messages.map((message, index) => (
-                            <p
-                                key={index}
-                                className="text-gray-700 border-b p-2"
-                            >
-                                {message}
-                            </p>
-                        ))
-                    ) : (
-                        <p className="text-gray-500">
-                            No messages to display. Start a conversation!
-                        </p>
-                    )}
+        <div className="chat-box">
+            {error && <p className="error">{error}</p>}
+            {chatHistory.map(message => (
+                <div key={message._id}>
+                    <strong>{message.sender.username}</strong>: {message.content}
                 </div>
-                <div className="input-container flex items-center">
-                    <input
-                        value={newMessage}
-                        onChange={(e) => setNewMessage(e.target.value)}
-                        className="flex-grow p-2 border rounded-l focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition mr-2"
-                        placeholder="Type your message..."
-                    />
-                    <button
-                        onClick={handleSendMessage}
-                        className="bg-blue-500 text-white p-2 rounded-r hover:bg-blue-600 transition"
-                    >
-                        Send
-                    </button>
-                </div>
-            </div>
+            ))}
+            <input value={message} onChange={(e) => setMessage(e.target.value)} />
+            <button onClick={handleSendMessage}>Send</button>
         </div>
     );
-}
+};
 
 export default ChatBox;

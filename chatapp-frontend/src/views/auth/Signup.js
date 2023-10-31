@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { signupUser } from '../../utils/api';
+import { signup } from '../../utils/api';
 
 function Signup() {
     const [formData, setFormData] = useState({
@@ -45,7 +45,7 @@ function Signup() {
         if (formData.password === formData.password2) {
             setPasswordError(''); // Clear any previous error
             try {
-                const response = await signupUser(formData);
+                const response = await signup(formData);
                 if (
                     response &&
                     response.data &&

@@ -2,35 +2,58 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000/api';
 
-export const api = axios.create({
+const api = axios.create({
     baseURL: BASE_URL,
     headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
     }
 });
 
-export const getCurrentUser = () => {
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-        throw new Error('Token not found in local storage');
-    }
-    return api.get(`/user/me`); // Use the custom api instance here
-};
-
-export const getUsers = () => {
-    return api.get(`/user`);
-};
-
-export const loginUser = (userData) => api.post(`/user/login`, userData);
-export const signupUser = (userData) => api.post(`/user/signup`, userData);
-
-export const fetchChatHistory = (currentUsername, selectedUserId) => {
+export const fetchUsers = async () => {
     try {
-        const response =  api.get(`/chat/history/${currentUsername}/${selectedUserId}`);
-        return response;
+        const response = await api.get('/user');
+        return response.data;
     } catch (error) {
-        console.error('Error fetching chat history:', error);
-        throw error;
+        throw new Error(error.response?.data?.message || 'Error fetching users.');
     }
 };
+
+export const fetchChatHistory = async (currentUserId, selectedUserId) => {
+    try {
+        const response = await api.get(`/chat/history/${currentUserId}/${selectedUserId}`);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error fetching chat history.');
+    }
+};
+
+export const login = async (data) => {
+    try {
+        const response = await api.post('/user/login', data);
+        localStorage.setItem('token', response.data.token);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error logging in.');
+    }
+};
+
+export const signup = async (data) => {
+    try {
+        const response = await api.post('/user/signup', data);
+        localStorage.setItem('token', response.data.token);
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error signing up.');
+    }
+};
+
+export const getCurrentUser = async () => {
+    try {
+        const response = await api.get('/user/me');
+        return response.data;
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Error fetching current user.');
+    }
+};
+
+// Add more API functions as needed...
