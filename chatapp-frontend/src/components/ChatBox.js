@@ -1,15 +1,31 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import io from 'socket.io-client';
-import UserList from './UserList';
+import { fetchChatHistory } from '../utils/api';
 
 const BASE_URL = 'http://localhost:5000';
 const socket = io(BASE_URL);
 
-function ChatBox() {
-    const { userId } = useParams();
+function ChatBox({ selectedUserId, currentUser }) {
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
+
+    useEffect(() => {
+        const getChatHistory = async () => {
+            if (selectedUserId && currentUser) {
+                try {
+                    const response = await fetchChatHistory(
+                        currentUser.id,
+                        selectedUserId
+                    );
+                    setMessages(response.data);
+                } catch (err) {
+                    console.error('Error fetching chat history: ', err);
+                }
+            }
+        };
+
+            getChatHistory();
+    }, [selectedUserId, currentUser]);
 
     useEffect(() => {
         socket.on('receive_message', (message) => {
@@ -30,7 +46,6 @@ function ChatBox() {
 
     return (
         <div className="flex">
-            <UserList />
             <div className="chatbox-container p-4 bg-white rounded shadow-md">
                 <div className="messages-container mb-4">
                     {messages.length > 0 ? (
