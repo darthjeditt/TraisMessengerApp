@@ -4,9 +4,9 @@ const { getAllMessages, postMessage } = require('../controllers/chatController')
 const isAuthenticated = require('../middleware/authMiddleware');
 
 // Get all chat messages
-router.get('/messages', isAuthenticated, getAllMessages);
+router.get('chat/messages', isAuthenticated, getAllMessages);
 
 // Add a new chat message
-router.post('/messages', isAuthenticated, postMessage);
+router.post('chat/messages', isAuthenticated, postMessage);
 
 module.exports = router;

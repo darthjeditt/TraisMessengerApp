@@ -15,15 +15,14 @@ export const getCurrentUser = () => {
     if (!token) {
         throw new Error('Token not found in local storage');
     }
-    return api.get(`/user/me`);  // Use the custom api instance here
+    return api.get(`/user/me`); // Use the custom api instance here
 };
 
 export const getUsers = () => {
     return api.get(`/user`);
 };
 
-export const loginUser = (userData) =>
-    api.post(`/user/login`, userData);
-export const signupUser = (userData) =>
-    api.post(`/user/signup`, userData);
-export const fetchMessages = () => api.get(`/chat/messages`);
+export const loginUser = (userData) => api.post(`/user/login`, userData);
+export const signupUser = (userData) => api.post(`/user/signup`, userData);
+
+export const fetchMessages = () => api.get(`/messages`);

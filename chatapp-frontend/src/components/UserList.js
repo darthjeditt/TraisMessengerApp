@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { FaUserCircle } from 'react-icons/fa'; // Importing the user icon
 import ProfilePopup from './profilePopup';
-import { getCurrentUser, getUsers } from '../utils/api';
+import { getCurrentUser, getUsers, fetchMessages } from '../utils/api';
 
 function UserList() {
     const [users, setUsers] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
+    const [chatMessages, setChatMessages] = useState([]);
     const [showProfilePopup, setShowProfilePopup] = useState(false);
 
     useEffect(() => {
@@ -29,6 +30,18 @@ function UserList() {
                 console.error('Error fetching current user:', error);
             }
         };
+        const fetchChatMessages = async () => {
+            try {
+                const response = await fetchMessages();
+                if (response) {
+                    setChatMessages(response);
+                    console.log(`response: ${response.data}`);
+                }
+            } catch (err) {
+                console.error('Error fetching messages', err);
+            }
+        };
+        fetchChatMessages();
         fetchUsers();
         fetchCurrentUser();
     }, []);
@@ -37,7 +50,9 @@ function UserList() {
         <div>
             <ul>
                 {users.map((user) => (
-                    <li key={user._id}>{user.username}</li>
+                    <li key={user._id}>
+                        {user.username}
+                    </li>
                 ))}
             </ul>
             {currentUser && (
