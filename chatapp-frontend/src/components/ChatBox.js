@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import socketIOClient from 'socket.io-client';
 import { fetchChatHistory, sendMessage, getCurrentUser } from '../utils/api';
+
+const ENDPOINT = "http://localhost:5000"; // Your server endpoint
+const socket = socketIOClient(ENDPOINT);
 
 function ChatBox({ selectedUserId }) {
     const [messages, setMessages] = useState([]);
@@ -7,27 +11,21 @@ function ChatBox({ selectedUserId }) {
     const [currentUserId, setCurrentUserId] = useState(null);
 
     useEffect(() => {
-        async function fetchCurrentUser() {
-            try {
-                const user = await getCurrentUser();
-                setCurrentUserId(user._id);
-            } catch (error) {
-                console.error('Error fetching current user:', error);
-            }
-        }
+        getCurrentUser().then(user => {
+            setCurrentUserId(user._id);
+            getChatHistory(user._id, selectedUserId);
+        }).catch(error => console.error('Error fetching current user:', error));
 
-        fetchCurrentUser();
-    }, []);
+        socket.on("newMessage", (newMessage) => {
+            setMessages(messages => [...messages, newMessage]);
+        });
 
-    useEffect(() => {
-        if (currentUserId) {
-            getChatHistory(currentUserId, selectedUserId);
-        }
-    }, [currentUserId, selectedUserId]);
+        return () => socket.off("newMessage");
+    }, [selectedUserId]);
 
-    const getChatHistory = async (currentUserId, selectedUserId) => {
+    const getChatHistory = async (userId, selectedUserId) => {
         try {
-            const chatHistory = await fetchChatHistory(currentUserId, selectedUserId);
+            const chatHistory = await fetchChatHistory(userId, selectedUserId);
             setMessages(chatHistory);
         } catch (error) {
             console.error('Error fetching chat history:', error);
@@ -35,30 +33,34 @@ function ChatBox({ selectedUserId }) {
     };
 
     const handleSendMessage = async () => {
-        try {
-            await sendMessage(currentMessage, currentUserId);
-            setCurrentMessage('');
-            getChatHistory(currentUserId, selectedUserId);
-        } catch (error) {
-            console.error('Error sending message:', error);
+        if (currentMessage.trim()) {
+            try {
+                const message = await sendMessage(currentMessage, currentUserId, selectedUserId);
+                socket.emit("sendMessage", message);
+                setCurrentMessage('');
+            } catch (error) {
+                console.error('Error sending message:', error);
+            }
         }
     };
 
     return (
-        <div>
-            <div>
-                {messages.map((message) => (
-                    <div key={message._id}>
-                        <span>{message.sender.username}: </span>
+        <div className="chat-box">
+            <div className="messages">
+                {messages.map((message, index) => (
+                    <div key={index} className={`message ${message.sender === currentUserId ? 'sent' : 'received'}`}>
                         <span>{message.content}</span>
                     </div>
                 ))}
             </div>
-            <input
-                value={currentMessage}
-                onChange={(e) => setCurrentMessage(e.target.value)}
-            />
-            <button onClick={handleSendMessage}>Send</button>
+            <div className="message-input">
+                <input
+                    value={currentMessage}
+                    onChange={(e) => setCurrentMessage(e.target.value)}
+                    placeholder="Type a message..."
+                />
+                <button onClick={handleSendMessage}>Send</button>
+            </div>
         </div>
     );
 }

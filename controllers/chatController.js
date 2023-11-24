@@ -12,17 +12,22 @@ const getAllMessages = async (req, res) => {
     }
 };
 
-const postMessage = async (req, res) => {
-    const { content, sender } = req.body;
+const postMessage = async (req, res, io) => {
+    const { content, sender, receiver } = req.body;
     try {
-        const newMessage = new Message({ content, sender });
+        const newMessage = new Message({ content, sender, receiver });
         await newMessage.save();
+
+        // Emit the message to all connected clients
+        io.emit('newMessage', newMessage);
+
         return res.status(201).json({ message: 'Message sent successfully' });
     } catch (error) {
         console.error('Error posting message:', error);
         return res.status(500).json({ error: 'Failed to send message' });
     }
 };
+
 
 const getChatHistory = async (req, res) => {
     const { currentUserId, selectedUserId } = req.params;

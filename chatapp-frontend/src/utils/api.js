@@ -58,7 +58,7 @@ export const getCurrentUser = async () => {
 
 export const sendMessage = async (content, senderId, receiverId) => {
     try {
-        const response = await api.post('/api/chat/message', {
+        const response = await api.post('/chat/message', {
             content,
             sender: senderId,
             receiver: receiverId

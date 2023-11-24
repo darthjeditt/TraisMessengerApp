@@ -1,72 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import { FaUserCircle } from 'react-icons/fa';
-import ProfilePopup from './profilePopup';
-import { fetchUsers, getCurrentUser } from '../utils/api';
+import { fetchUsers } from '../utils/api';
 
-const UserList = ({ setSelectedUserId }) => {
+function UserList({ onUserSelect }) {
     const [users, setUsers] = useState([]);
-    const [currentUser, setCurrentUser] = useState(null);
-    const [showProfilePopup, setShowProfilePopup] = useState(false);
-    const [error, setError] = useState(null);
+    const [selectedUserId, setSelectedUserId] = useState(null);
 
     useEffect(() => {
-        const getUsers = async () => {
-            try {
-                const fetchedUsers = await fetchUsers();
-                setUsers(fetchedUsers);
-            } catch (err) {
-                setError(err.message);
-            }
-        };
-
-        const fetchCurrentUser = async () => {
-            try {
-                const user = await getCurrentUser();
-                setCurrentUser(user);
-            } catch (err) {
-                setError(err.message);
-            }
-        };
-
-        getUsers();
-        fetchCurrentUser();
+        fetchUsers().then(fetchedUsers => {
+            setUsers(fetchedUsers);
+        }).catch(error => console.error('Error fetching users:', error));
     }, []);
-
-    const handleProfileClick = () => {
-        setShowProfilePopup(!showProfilePopup);
-    };
 
     const handleUserClick = (userId) => {
         setSelectedUserId(userId);
+        onUserSelect(userId);
     };
 
     return (
         <div className="user-list">
-            {users.map((user) => (
+            {users.map(user => (
                 <div
-                    className={'cursor-pointer'}
                     key={user._id}
+                    className={`user ${user._id === selectedUserId ? 'selected' : ''}`}
                     onClick={() => handleUserClick(user._id)}
                 >
-                    {user.username}
+                    {user.name}
                 </div>
             ))}
-            {error && <p className="error">{error}</p>}
-            {currentUser && (
-                <div className="cursor-pointer" onClick={handleProfileClick}>
-                    <FaUserCircle size={40} />
-                    {showProfilePopup && (
-                        <div className="profile-popup">
-                            <ProfilePopup
-                                user={currentUser}
-                                onClose={setShowProfilePopup(false)}
-                            ></ProfilePopup>
-                        </div>
-                    )}
-                </div>
-            )}
         </div>
     );
-};
+}
 
 export default UserList;

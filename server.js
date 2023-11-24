@@ -6,8 +6,6 @@ const morgan = require('morgan');
 const http = require('http');
 const socketIo = require('socket.io');
 
-const userRoutes = require('./routes/userRoutes');
-const chatRoutes = require('./routes/chatRoutes');
 const isAuthenticated = require('./middleware/authMiddleware');
 
 const app = express();
@@ -18,6 +16,9 @@ const io = socketIo(server, {
         methods: ['GET', 'POST']
     }
 });
+
+const userRoutes = require('./routes/userRoutes');
+const chatRoutes = require('./routes/chatRoutes')(io);
 
 app.use(bodyParser.json());
 app.use(
@@ -32,10 +33,6 @@ const PORT = process.env.PORT || 5000;
 
 io.on('connection', (socket) => {
     console.log(`${socket.id} connected`);
-
-    socket.on('send_message', (message) => {
-        io.emit('receive_message', message);
-    });
 
     socket.on('disconnect', () => {
         console.log(`${socket.id} disconnected`);
