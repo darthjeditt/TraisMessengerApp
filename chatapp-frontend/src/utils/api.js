@@ -11,7 +11,13 @@ const api = axios.create({
 
 export const fetchUsers = async () => {
     try {
-        const response = await api.get('/user');
+        const response = await api.get('/users', {
+            method: 'GET',
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+            },
+        });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Error fetching users.');
@@ -29,7 +35,7 @@ export const fetchChatHistory = async (currentUserId, selectedUserId) => {
 
 export const login = async (data) => {
     try {
-        const response = await api.post('/user/login', data);
+        const response = await api.post('/users/login', data);
         localStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
@@ -39,7 +45,7 @@ export const login = async (data) => {
 
 export const signup = async (data) => {
     try {
-        const response = await api.post('/user/signup', data);
+        const response = await api.post('/users/signup', data);
         localStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
@@ -49,7 +55,13 @@ export const signup = async (data) => {
 
 export const getCurrentUser = async () => {
     try {
-        const response = await api.get('/user/me');
+        const response = await api.get('/users/me', {
+            method: 'GET',
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache',
+            },
+        });
         return response.data;
     } catch (error) {
         throw new Error(error.response?.data?.message || 'Error fetching current user.');

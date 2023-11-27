@@ -43,7 +43,7 @@ app.get('/api/data', (req, res) => {
     res.json({ message: 'Data from backend!' });
 });
 
-app.use('/api/user', userRoutes);
+app.use('/api/users', userRoutes);
 app.use('/api/chat', isAuthenticated, chatRoutes);
 
 app.use((err, req, res, next) => {
