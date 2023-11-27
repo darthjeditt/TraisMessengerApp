@@ -47,6 +47,7 @@ function ChatBox({ selectedUserId }) {
     return (
         <div className="chat-box">
             <div className="messages">
+                <div>{console.log(messages)}</div>
                 {messages.map((message, index) => (
                     <div key={index} className={`message ${message.sender === currentUserId ? 'sent' : 'received'}`}>
                         <span>{message.content}</span>

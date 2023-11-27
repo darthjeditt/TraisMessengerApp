@@ -11,7 +11,7 @@ function Home() {
             <Header />
             <div className="flex">
                 <div className='flex-1 bg-gray-100 p-4 border-r'>
-                    <UserList onUserClick={setSelectedUserId} />
+                    <UserList onUserSelect={setSelectedUserId} />
                 </div>
                 <div className='flex-3 p-4'>
                     <ChatBox selectedUserId={selectedUserId} />

@@ -24,7 +24,7 @@ function UserList({ onUserSelect }) {
                     className={`user ${user._id === selectedUserId ? 'selected' : ''}`}
                     onClick={() => handleUserClick(user._id)}
                 >
-                    {user.name}
+                    {user.username}
                 </div>
             ))}
         </div>
