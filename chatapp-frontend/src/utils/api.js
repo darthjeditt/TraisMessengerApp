@@ -2,78 +2,98 @@ import axios from 'axios';
 
 const BASE_URL = 'http://localhost:5000/api';
 
+// Create an Axios instance for reusable configuration
 const api = axios.create({
     baseURL: BASE_URL,
-    headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`
-    }
 });
 
+// Function to get the auth token
+const getAuthToken = () => `Bearer ${localStorage.getItem('token')}`;
+
+// Function to handle API errors
+const handleApiError = (error) => {
+    throw new Error(error.response?.data?.message || 'An error occurred while processing your request.');
+};
+
+// Fetch users
 export const fetchUsers = async () => {
     try {
         const response = await api.get('/users', {
-            method: 'GET',
             headers: {
+                'Authorization': getAuthToken(),
                 'Cache-Control': 'no-cache',
                 'Pragma': 'no-cache',
             },
         });
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error fetching users.');
+        handleApiError(error);
     }
 };
 
+// Fetch chat history
 export const fetchChatHistory = async (currentUserId, selectedUserId) => {
     try {
-        const response = await api.get(`/chat/history/${currentUserId}/${selectedUserId}`);
+        const response = await api.get(`/chat/history/${currentUserId}/${selectedUserId}`, {
+            headers: {
+                'Authorization': getAuthToken(),
+            },
+        });
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error fetching chat history.');
+        handleApiError(error);
     }
 };
 
+// User login
 export const login = async (data) => {
     try {
         const response = await api.post('/users/login', data);
         localStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error logging in.');
+        handleApiError(error);
     }
 };
 
+// User signup
 export const signup = async (data) => {
     try {
         const response = await api.post('/users/signup', data);
         localStorage.setItem('token', response.data.token);
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error signing up.');
+        handleApiError(error);
     }
 };
 
+// Get current user
 export const getCurrentUser = async () => {
     try {
         const response = await api.get('/users/me', {
-            method: 'GET',
             headers: {
+                'Authorization': getAuthToken(),
                 'Cache-Control': 'no-cache',
                 'Pragma': 'no-cache',
             },
         });
         return response.data;
     } catch (error) {
-        throw new Error(error.response?.data?.message || 'Error fetching current user.');
+        handleApiError(error);
     }
 };
 
+// Send message
 export const sendMessage = async (content, senderId, receiverId) => {
     try {
         const response = await api.post('/chat/messages', {
             content,
             sender: senderId,
             receiver: receiverId
+        }, {
+            headers: {
+                'Authorization': getAuthToken(),
+            },
         });
         return response.data;
     } catch (error) {
@@ -81,4 +101,5 @@ export const sendMessage = async (content, senderId, receiverId) => {
         throw error;
     }
 };
+
 // Add more API functions as needed...
