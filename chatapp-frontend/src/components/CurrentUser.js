@@ -1,23 +1,38 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser } from '../utils/api';
+import { TailSpin } from 'react-loader-spinner';
 
 function CurrentUserDisplay() {
     const [currentUser, setCurrentUser] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
-        getCurrentUser().then(user => {
-            setCurrentUser(user);
-        }).catch(error => console.error('Error fetching current user:', error));
+        const fetchUser = async () => {
+            try {
+                const user = await getCurrentUser();
+                setCurrentUser(user);
+            } catch (error) {
+                console.error('Error fetching current user:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchUser();
     }, []);
 
+    if (isLoading) {
+        return <TailSpin />; // Replace with your loading spinner or UI element
+    }
+
     if (!currentUser) {
-        return <div>Loading user...</div>;
+        return <div>User not found.</div>;
     }
 
     return (
         <div className="current-user-display">
-            <div className="user-name">{currentUser.name}</div>
-            {/* Add more user details here if needed */}
+            <div className="user-name">{currentUser.username}</div>
+            {/* Add more user details here */}
         </div>
     );
 }

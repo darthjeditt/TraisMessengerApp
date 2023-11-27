@@ -1,69 +1,71 @@
 import React, { useState, useEffect } from 'react';
-import socketIOClient from 'socket.io-client';
-import { fetchChatHistory, sendMessage, getCurrentUser } from '../utils/api';
+import { getCurrentUser, fetchChatHistory, sendMessage } from '../utils/api'; // Adjust the import path as needed
 
-const ENDPOINT = "http://localhost:5000"; // Your server endpoint
-const socket = socketIOClient(ENDPOINT);
-
-function ChatBox({ selectedUserId }) {
-    const [messages, setMessages] = useState([]);
-    const [currentMessage, setCurrentMessage] = useState('');
+const ChatBox = ({ selectedUserId }) => {
     const [currentUserId, setCurrentUserId] = useState(null);
+    const [messages, setMessages] = useState([]);
+    const [newMessage, setNewMessage] = useState('');
 
     useEffect(() => {
-        getCurrentUser().then(user => {
-            setCurrentUserId(user._id);
-            getChatHistory(user._id, selectedUserId);
-        }).catch(error => console.error('Error fetching current user:', error));
+        // Load current user ID
+        const loadCurrentUser = async () => {
+            try {
+                const currentUser = await getCurrentUser();
+                setCurrentUserId(currentUser._id);
+            } catch (error) {
+                console.error("Error fetching current user:", error);
+            }
+        };
 
-        socket.on("newMessage", (newMessage) => {
-            setMessages(messages => [...messages, newMessage]);
-        });
+        loadCurrentUser();
+    }, []);
 
-        return () => socket.off("newMessage");
-    }, [selectedUserId]);
+    useEffect(() => {
+        const loadChatHistory = async () => {
+            if (currentUserId && selectedUserId) {
+                try {
+                    const response = await fetchChatHistory(currentUserId, selectedUserId);
+                    setMessages(response.data || []); // Set to empty array if no data
+                } catch (error) {
+                    console.error("Error fetching chat history:", error);
+                    setMessages([]); // Set to empty array on error
+                }
+            }
+        };
 
-    const getChatHistory = async (userId, selectedUserId) => {
-        try {
-            const chatHistory = await fetchChatHistory(userId, selectedUserId);
-            setMessages(chatHistory);
-        } catch (error) {
-            console.error('Error fetching chat history:', error);
-        }
-    };
+        loadChatHistory();
+    }, [currentUserId, selectedUserId]);
 
     const handleSendMessage = async () => {
-        if (currentMessage.trim()) {
+        if (newMessage.trim()) {
             try {
-                const message = await sendMessage(currentMessage, currentUserId, selectedUserId);
-                socket.emit("sendMessage", message);
-                setCurrentMessage('');
+                await sendMessage(newMessage, currentUserId, selectedUserId);
+                setMessages([...messages, { content: newMessage, sender: currentUserId }]);
+                setNewMessage('');
             } catch (error) {
-                console.error('Error sending message:', error);
+                console.error("Error sending message:", error);
             }
         }
     };
 
     return (
-        <div className="chat-box">
-            <div className="messages">
-                <div>{console.log(messages)}</div>
+        <div>
+            <div className="chat-box">
                 {messages.map((message, index) => (
-                    <div key={index} className={`message ${message.sender === currentUserId ? 'sent' : 'received'}`}>
-                        <span>{message.content}</span>
-                    </div>
+                    <div key={index}>{message.content}</div>
                 ))}
             </div>
             <div className="message-input">
                 <input
-                    value={currentMessage}
-                    onChange={(e) => setCurrentMessage(e.target.value)}
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
                 />
                 <button onClick={handleSendMessage}>Send</button>
             </div>
         </div>
     );
-}
+};
 
 export default ChatBox;
