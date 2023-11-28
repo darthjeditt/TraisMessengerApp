@@ -13,7 +13,7 @@ const ChatBox = ({ selectedUserId }) => {
                 const currentUser = await getCurrentUser();
                 setCurrentUserId(currentUser._id);
             } catch (error) {
-                console.error("Error fetching current user:", error);
+                console.error('Error fetching current user:', error);
             }
         };
 
@@ -24,10 +24,13 @@ const ChatBox = ({ selectedUserId }) => {
         const loadChatHistory = async () => {
             if (currentUserId && selectedUserId) {
                 try {
-                    const response = await fetchChatHistory(currentUserId, selectedUserId);
+                    const response = await fetchChatHistory(
+                        currentUserId,
+                        selectedUserId
+                    );
                     setMessages(response.data || []); // Set to empty array if no data
                 } catch (error) {
-                    console.error("Error fetching chat history:", error);
+                    console.error('Error fetching chat history:', error);
                     setMessages([]); // Set to empty array on error
                 }
             }
@@ -40,10 +43,17 @@ const ChatBox = ({ selectedUserId }) => {
         if (newMessage.trim()) {
             try {
                 await sendMessage(newMessage, currentUserId, selectedUserId);
-                setMessages([...messages, { content: newMessage, sender: currentUserId, timestamp: new Date().toISOString() }]);
+                setMessages([
+                    ...messages,
+                    {
+                        content: newMessage,
+                        sender: currentUserId,
+                        timestamp: new Date().toISOString()
+                    }
+                ]);
                 setNewMessage('');
             } catch (error) {
-                console.error("Error sending message:", error);
+                console.error('Error sending message:', error);
             }
         }
     };
@@ -59,26 +69,41 @@ const ChatBox = ({ selectedUserId }) => {
     };
 
     return (
-        <div>
-            <div className="chat-box overflow-y-auto h-96">
+        <div className="flex flex-col h-screen">
+            <div className="chat-box overflow-y-auto flex-grow">
                 {messages.map((message, index) => (
-                    <div key={index} className={`my-2 p-2 rounded-lg max-w-2xl ${message.sender === currentUserId ? 'bg-green-200 ml-auto text-right' : 'bg-gray-200 mr-auto text-left'}`}>
+                    <div
+                        key={index}
+                        className={`my-2 p-2 rounded-lg max-w-2xl ${
+                            message.sender === currentUserId
+                                ? 'bg-green-200 ml-auto text-right'
+                                : 'bg-gray-200 mr-auto text-left'
+                        }`}
+                    >
                         <div className="message-content">{message.content}</div>
                         <div className="message-timestamp text-xs text-gray-500 mt-1">
-                            {message.sender === currentUserId && isLatestMessageFromCurrentUser(index) ? 'Sent' : new Date(message.timestamp).toLocaleString()}
+                            {message.sender === currentUserId &&
+                            isLatestMessageFromCurrentUser(index)
+                                ? 'Sent'
+                                : new Date(message.timestamp).toLocaleString()}
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="message-input mt-4">
+            <div className="message-input mt-4 flex">
                 <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
-                    className="border p-2 rounded w-full"
+                    className="border p-2 rounded flex-grow"
                 />
-                <button onClick={handleSendMessage} className="bg-blue-500 text-white p-2 rounded mt-2">Send</button>
+                <button
+                    onClick={handleSendMessage}
+                    className="bg-blue-500 text-white p-2 rounded ml-2"
+                >
+                    Send
+                </button>
             </div>
         </div>
     );

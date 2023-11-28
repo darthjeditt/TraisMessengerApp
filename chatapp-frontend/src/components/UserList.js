@@ -20,7 +20,7 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-center font-bold text-lg text-white p-10 w-4">
+        <div className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-center font-bold text-lg text-white p-10 w-64">
             {users.map((user) => (
                 <div
                     key={user._id}
