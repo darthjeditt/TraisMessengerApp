@@ -69,7 +69,7 @@ const ChatBox = ({ selectedUserId }) => {
     };
 
     return (
-        <div className="flex flex-col h-screen">
+        <div className="flex flex-col h-2/3">
             <div className="chat-box overflow-y-auto flex-grow">
                 {messages.map((message, index) => (
                     <div

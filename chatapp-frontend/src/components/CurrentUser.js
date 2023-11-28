@@ -27,11 +27,18 @@ const CurrentUser = () => {
     return (
         <div className="relative flex items-center justify-center p-4">
             <div className="cursor-pointer" onClick={handleProfileClick}>
-                <img src={currentUser.profileImage} alt="Profile" className="rounded-full w-10 h-10 border-2 border-blue-500" />
+                <img
+                    src={currentUser.profileImage}
+                    alt="Profile"
+                    className="rounded-full w-10 h-10 border-2 border-blue-500"
+                />
             </div>
 
             {showProfilePopup && (
-                <ProfilePopup user={currentUser} onClose={() => setShowProfilePopup(false)} />
+                <ProfilePopup
+                    user={currentUser}
+                    onClose={() => setShowProfilePopup(false)}
+                />
             )}
         </div>
     );

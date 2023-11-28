@@ -5,6 +5,8 @@ import CurrentUserDisplay from './CurrentUser';
 function UserList({ onUserSelect }) {
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const userItemHeight = 50; 
+    const userListHeight = users.length * userItemHeight; 
 
     useEffect(() => {
         fetchUsers()
@@ -20,14 +22,14 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-center font-bold text-lg text-white p-10 w-64">
+        <div style={{ height: `${userListHeight}px` }} className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-start font-bold text-lg text-white p-10 w-32 overflow-y-auto">
             {users.map((user) => (
                 <div
                     key={user._id}
                     className={`user p-2 my-2 rounded ${
                         user._id === selectedUserId
                             ? 'bg-black'
-                            : 'hover:bg-black'
+                            : 'hover:bg-black hover:shadow-lg transform hover:scale-105 transition duration-300' // Enhanced hover effect
                     } cursor-pointer`}
                     onClick={() => handleUserClick(user._id)}
                 >
