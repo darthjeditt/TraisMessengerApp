@@ -34,7 +34,7 @@ function UserList({ onUserSelect }) {
                     {user.username}
                 </div>
             ))}
-            <div className='p-5'/>
+            <div className="p-5" />
             <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-purple-600 font-semibold">
                 <CurrentUserDisplay />
             </div>

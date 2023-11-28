@@ -115,12 +115,15 @@ export const sendMessage = async (content, senderId, receiverId) => {
 // Online Status
 export const updateUserStatus = async (userId, status) => {
     try {
-        await api.put(`/users/${userId}/status`, {
-            online: status,
-            headers: {
-                Authorization: getAuthToken()
+        await api.put(
+            `/users/${userId}/status`,
+            { online: status },
+            {
+                headers: {
+                    Authorization: getAuthToken()
+                }
             }
-        });
+        );
     } catch (error) {
         handleApiError(error);
     }
