@@ -4,7 +4,7 @@ const BASE_URL = 'http://localhost:5000/api';
 
 // Create an Axios instance for reusable configuration
 const api = axios.create({
-    baseURL: BASE_URL,
+    baseURL: BASE_URL
 });
 
 // Function to get the auth token
@@ -12,7 +12,10 @@ const getAuthToken = () => `Bearer ${localStorage.getItem('token')}`;
 
 // Function to handle API errors
 const handleApiError = (error) => {
-    throw new Error(error.response?.data?.message || 'An error occurred while processing your request.');
+    throw new Error(
+        error.response?.data?.message ||
+            'An error occurred while processing your request.'
+    );
 };
 
 // Fetch users
@@ -20,10 +23,10 @@ export const fetchUsers = async () => {
     try {
         const response = await api.get('/users', {
             headers: {
-                'Authorization': getAuthToken(),
+                Authorization: getAuthToken(),
                 'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-            },
+                Pragma: 'no-cache'
+            }
         });
         return response.data;
     } catch (error) {
@@ -34,11 +37,14 @@ export const fetchUsers = async () => {
 // Fetch chat history
 export const fetchChatHistory = async (currentUserId, selectedUserId) => {
     try {
-        const response = await api.get(`/chat/history/${currentUserId}/${selectedUserId}`, {
-            headers: {
-                'Authorization': getAuthToken(),
-            },
-        });
+        const response = await api.get(
+            `/chat/history/${currentUserId}/${selectedUserId}`,
+            {
+                headers: {
+                    Authorization: getAuthToken()
+                }
+            }
+        );
         return response.data;
     } catch (error) {
         handleApiError(error);
@@ -72,10 +78,10 @@ export const getCurrentUser = async () => {
     try {
         const response = await api.get('/users/me', {
             headers: {
-                'Authorization': getAuthToken(),
+                Authorization: getAuthToken(),
                 'Cache-Control': 'no-cache',
-                'Pragma': 'no-cache',
-            },
+                Pragma: 'no-cache'
+            }
         });
         return response.data;
     } catch (error) {
@@ -86,15 +92,19 @@ export const getCurrentUser = async () => {
 // Send message
 export const sendMessage = async (content, senderId, receiverId) => {
     try {
-        const response = await api.post('/chat/messages', {
-            content,
-            sender: senderId,
-            receiver: receiverId
-        }, {
-            headers: {
-                'Authorization': getAuthToken(),
+        const response = await api.post(
+            '/chat/messages',
+            {
+                content,
+                sender: senderId,
+                receiver: receiverId
             },
-        });
+            {
+                headers: {
+                    Authorization: getAuthToken()
+                }
+            }
+        );
         return response.data;
     } catch (error) {
         console.error('Error sending message:', error);
@@ -102,4 +112,16 @@ export const sendMessage = async (content, senderId, receiverId) => {
     }
 };
 
-// Add more API functions as needed...
+// Online Status
+export const updateUserStatus = async (userId, status) => {
+    try {
+        await api.put(`/users/${userId}/status`, {
+            online: status,
+            headers: {
+                Authorization: getAuthToken()
+            }
+        });
+    } catch (error) {
+        handleApiError(error);
+    }
+};

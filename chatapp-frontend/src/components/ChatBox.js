@@ -40,7 +40,7 @@ const ChatBox = ({ selectedUserId }) => {
         if (newMessage.trim()) {
             try {
                 await sendMessage(newMessage, currentUserId, selectedUserId);
-                setMessages([...messages, { content: newMessage, sender: currentUserId }]);
+                setMessages([...messages, { content: newMessage, sender: currentUserId, timestamp: new Date().toISOString() }]);
                 setNewMessage('');
             } catch (error) {
                 console.error("Error sending message:", error);
@@ -48,21 +48,37 @@ const ChatBox = ({ selectedUserId }) => {
         }
     };
 
+    // Function to determine if the message is the latest sent by the current user
+    const isLatestMessageFromCurrentUser = (index) => {
+        for (let i = messages.length - 1; i > index; i--) {
+            if (messages[i].sender === currentUserId) {
+                return false;
+            }
+        }
+        return true;
+    };
+
     return (
         <div>
-            <div className="chat-box">
+            <div className="chat-box overflow-y-auto h-96">
                 {messages.map((message, index) => (
-                    <div key={index}>{message.content}</div>
+                    <div key={index} className={`my-2 p-2 rounded-lg max-w-2xl ${message.sender === currentUserId ? 'bg-green-200 ml-auto text-right' : 'bg-gray-200 mr-auto text-left'}`}>
+                        <div className="message-content">{message.content}</div>
+                        <div className="message-timestamp text-xs text-gray-500 mt-1">
+                            {message.sender === currentUserId && isLatestMessageFromCurrentUser(index) ? 'Sent' : new Date(message.timestamp).toLocaleString()}
+                        </div>
+                    </div>
                 ))}
             </div>
-            <div className="message-input">
+            <div className="message-input mt-4">
                 <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Type a message..."
+                    className="border p-2 rounded w-full"
                 />
-                <button onClick={handleSendMessage}>Send</button>
+                <button onClick={handleSendMessage} className="bg-blue-500 text-white p-2 rounded mt-2">Send</button>
             </div>
         </div>
     );
