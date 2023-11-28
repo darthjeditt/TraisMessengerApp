@@ -20,22 +20,21 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-start font-bold text-lg text-white p-10 w-32">
+        <div className="flex flex-col bg-gradient-to-b from-green-500 to-blue-500 p-4 shadow-lg flex-grow pb-4">
             {users.map((user) => (
                 <div
                     key={user._id}
-                    className={`user p-2 my-2 rounded ${
+                    className={`p-2 my-2 rounded-lg ${
                         user._id === selectedUserId
-                            ? 'bg-black'
-                            : 'hover:bg-black hover:shadow-lg transform hover:scale-105 transition duration-300' // Enhanced hover effect
-                    } cursor-pointer`}
+                            ? 'bg-gray-900'
+                            : 'hover:bg-gray-600'
+                    } cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 text-white`}
                     onClick={() => handleUserClick(user._id)}
                 >
                     {user.username}
                 </div>
             ))}
-            <div className="p-5" />
-            <div className="w-16 h-16 rounded-full bg-white flex items-center justify-center text-purple-600 font-semibold">
+            <div className="mt-auto">
                 <CurrentUserDisplay />
             </div>
         </div>
