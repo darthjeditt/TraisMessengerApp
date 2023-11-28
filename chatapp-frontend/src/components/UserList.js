@@ -5,8 +5,6 @@ import CurrentUserDisplay from './CurrentUser';
 function UserList({ onUserSelect }) {
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
-    const userItemHeight = 50; 
-    const userListHeight = users.length * userItemHeight; 
 
     useEffect(() => {
         fetchUsers()
@@ -22,7 +20,7 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div style={{ height: `${userListHeight}px` }} className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-start font-bold text-lg text-white p-10 w-32 overflow-y-auto">
+        <div className="bg-gradient-to-b from-green-400 via-purple-500 to-blue-500 flex flex-col items-center justify-start font-bold text-lg text-white p-10 w-32">
             {users.map((user) => (
                 <div
                     key={user._id}
