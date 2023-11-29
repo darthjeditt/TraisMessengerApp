@@ -20,13 +20,13 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div className="flex flex-col bg-gradient-to-b from-green-500 to-blue-500 p-4 shadow-lg flex-grow pb-4">
+        <div className="flex flex-col  p-4 shadow-lg flex-grow pb-4">
             {users.map((user) => (
                 <div
                     key={user._id}
-                    className={`p-2 my-2 rounded-lg ${
+                    className={`font-swurvy text-center p-2 my-2 rounded-lg font-semibold text-lg ${
                         user._id === selectedUserId
-                            ? 'bg-gray-900'
+                            ? 'bg-blue-900'
                             : 'hover:bg-gray-600'
                     } cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 text-white`}
                     onClick={() => handleUserClick(user._id)}

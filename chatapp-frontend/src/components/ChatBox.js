@@ -67,36 +67,38 @@ const ChatBox = ({ selectedUserId }) => {
     };
 
     return (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full bg-[url('https://i.pinimg.com/564x/6b/de/a3/6bdea3557da87eb2a3e10b53d3df19d4.jpg')] bg-cover backdrop-blur-md rounded-br-xl">
             <div className="flex-grow overflow-y-auto p-4">
                 {messages.map((message, index) => (
                     <div
                         key={index}
-                        className={`flex my-2 p-2 rounded-lg max-w-2xl ${
+                        className={`flex my-2 ${
                             message.sender === currentUserId
                                 ? 'justify-end'
                                 : 'justify-start'
                         }`}
                     >
                         <div
-                            className={`rounded-lg px-4 py-2 ${
+                            className={`font-swurvy px-4 py-2 ${
                                 message.sender === currentUserId
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-200 text-gray-800'
+                                    ? 'text-white'
+                                    : 'text-gray-800'
                             }`}
                         >
                             {message.content}
-                            <div className="text-xs text-white-500 mt-1">
+                            <div className="font-swurvy text-xs text-gray-500 mt-1">
                                 {message.sender === currentUserId &&
                                 isLatestMessageFromCurrentUser(index)
-                                ? 'Sent'
-                                : new Date(message.timestamp).toLocaleString()}
+                                    ? 'Sent'
+                                    : new Date(
+                                          message.timestamp
+                                      ).toLocaleString()}
                             </div>
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="p-4 bg-gray-700 rounded-b-xl">
+            <div className="p-4 bg-gray-900 bg-opacity-90 backdrop-blur-md">
                 <div className="flex rounded-lg border-2 border-gray-600 overflow-hidden">
                     <input
                         type="text"
@@ -107,7 +109,7 @@ const ChatBox = ({ selectedUserId }) => {
                     />
                     <button
                         onClick={handleSendMessage}
-                        className="bg-blue-500 hover:bg-blue-600 text-white p-2"
+                        className="bg-blue-600 hover:bg-blue-700 text-white p-2 transition duration-300"
                     >
                         Send
                     </button>

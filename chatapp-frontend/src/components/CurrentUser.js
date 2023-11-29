@@ -25,12 +25,17 @@ const CurrentUser = () => {
     }
 
     return (
-        <div className="relative p-4">
-            <div className="cursor-pointer" onClick={handleProfileClick}>
+        <div className="relative p-4 flex items-center">
+            <div
+                className="cursor-pointer shadow-xl rounded-full"
+                onClick={handleProfileClick}
+            >
                 <img
-                    src={currentUser.profileImage}
+                    src={
+                        'https://i.pinimg.com/564x/93/4b/4c/934b4cda17d0621f4a796cb195642a45.jpg'
+                    }
                     alt="Profile"
-                    className="rounded-full w-10 h-10 border-4 border-blue-500"
+                    className="rounded-full w-26 h-26 border-4 border-blue-500 mx-auto"
                 />
             </div>
             {showProfilePopup && (
