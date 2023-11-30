@@ -11,12 +11,10 @@ function Login() {
     const [animationClass, setAnimationClass] = useState('slide-in');
 
     useEffect(() => {
-        // Remove the slide-in class after the animation completes
         const timer = setTimeout(() => {
             setAnimationClass('');
-        }, 1000); // 1 second delay to match the animation duration
-
-        return () => clearTimeout(timer); // Cleanup on component unmount
+        }, 1000);
+        return () => clearTimeout(timer);
     }, []);
 
     const handleSignupClick = (e) => {
@@ -24,7 +22,7 @@ function Login() {
         setAnimationClass('slide-out');
         setTimeout(() => {
             navigate('/signup', { replace: true });
-        }, 1000); // 1 second to allow for the slide and fade effect
+        }, 1000);
     };
 
     const handleChange = (e) => {

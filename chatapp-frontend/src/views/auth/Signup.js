@@ -23,12 +23,10 @@ function Signup() {
     };
 
     useEffect(() => {
-        // Remove the slide-in class after the animation completes
         const timer = setTimeout(() => {
             setAnimationClass('');
-        }, 1000); // 1 second delay to match the animation duration
-
-        return () => clearTimeout(timer); // Cleanup on component unmount
+        }, 1000);
+        return () => clearTimeout(timer);
     }, []);
 
     const handleLoginLinkClick = (e) => {
@@ -36,14 +34,14 @@ function Signup() {
         setAnimationClass('slide-out');
         setTimeout(() => {
             navigate('/login', { replace: true });
-        }, 1000); // 1 second to allow for the slide and fade effect
+        }, 1000);
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
         if (formData.password === formData.password2) {
-            setPasswordError(''); // Clear any previous error
+            setPasswordError('');
             try {
                 const response = await signup(formData);
                 if (
@@ -55,7 +53,7 @@ function Signup() {
                     setTimeout(() => {
                         setShowModal(false);
                         navigate('/login');
-                    }, 4000); // Display the modal for 3 seconds
+                    }, 4000);
                 } else {
                     console.error('Signup failed:', response);
                 }

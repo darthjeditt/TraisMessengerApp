@@ -2,7 +2,6 @@ const User = require('../models/userMdl');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv');
-const Message = require('../models/msgMdl');
 
 dotenv.config();
 
@@ -15,7 +14,7 @@ exports.registerUser = async (req, res, next) => {
         });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 12);
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const newUser = new User({
         username: req.body.username,
@@ -36,8 +35,11 @@ exports.registerUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res) => {
     const { username, password } = req.body;
+
     try {
         const user = await User.findOne({ username });
+
+        console.log(`does ${password} |equal| ${user.password}`)
         if (!user) {
             console.log(`User with username: ${username} not found.`);
             return res.status(401).json({ msg: 'Invalid credentials' });
@@ -48,7 +50,7 @@ exports.loginUser = async (req, res) => {
             return res.status(401).json({ msg: 'Invalid credentials' });
         }
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '1h'
+            expiresIn: '24h'
         });
         console.log('Backend Generated Token:', token);
 

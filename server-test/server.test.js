@@ -1,6 +1,6 @@
 const request = require('supertest');
 const mongoose = require('mongoose');
-const { app, server } = require('./server');
+const { app, server } = require('../server');
 
 describe('Server API Endpoints', () => {
     // Connect to the database before running tests
