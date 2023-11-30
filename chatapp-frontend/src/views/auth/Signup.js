@@ -52,18 +52,21 @@ function Signup() {
                     setShowModal(true);
                     setTimeout(() => {
                         setShowModal(false);
+                        setLoading(false); // Move setLoading here
                         navigate('/login');
                     }, 1000);
                 } else {
                     console.error('Signup failed:', response);
+                    setLoading(false); // Add setLoading here as well
                 }
             } catch (error) {
                 console.error('Error during signup:', error);
+                setLoading(false); // Ensure setLoading is set here too
             }
         } else {
             setPasswordError('Passwords do not match');
+            setLoading(false); // Set loading to false in case of password mismatch
         }
-        setLoading(false);
     };
 
     return (
