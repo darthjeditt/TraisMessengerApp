@@ -53,7 +53,7 @@ function Signup() {
                     setTimeout(() => {
                         setShowModal(false);
                         navigate('/login');
-                    }, 4000);
+                    }, 1000);
                 } else {
                     console.error('Signup failed:', response);
                 }

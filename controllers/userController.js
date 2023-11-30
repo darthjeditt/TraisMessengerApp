@@ -14,15 +14,9 @@ exports.registerUser = async (req, res, next) => {
         });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-    const newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword
-    });
-
     try {
+
+        const newUser = new User(req.body);
         await newUser.save();
         console.log(`User registered: ${newUser.username}`); // <-- Added log
         res.status(201).json({
@@ -30,6 +24,15 @@ exports.registerUser = async (req, res, next) => {
         });
     } catch (error) {
         next(error);
+    }
+};
+exports.registerUser = async (req, res, next) => {
+    try {
+        const user = new User(req.body);
+        await user.save();
+        res.status(201).send({ message: 'User registered successfully' });
+    } catch (error) {
+        res.status(400).send({ error: error.message });
     }
 };
 
