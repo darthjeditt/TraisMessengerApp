@@ -67,7 +67,7 @@ const ChatBox = ({ selectedUserId }) => {
     };
 
     return (
-        <div className="flex flex-col h-full bg-[url('https://i.pinimg.com/564x/6b/de/a3/6bdea3557da87eb2a3e10b53d3df19d4.jpg')] bg-cover backdrop-blur-md rounded-br-xl">
+        <div className="flex flex-col h-full rounded-br-xl shadow-xl min-h-[600px] max-h-[600px] bg-black/40">
             <div className="flex-grow overflow-y-auto p-4">
                 {messages.map((message, index) => (
                     <div
@@ -81,12 +81,15 @@ const ChatBox = ({ selectedUserId }) => {
                         <div
                             className={`font-swurvy px-4 py-2 ${
                                 message.sender === currentUserId
-                                    ? 'text-white'
-                                    : 'text-gray-800'
+                                    ? 'text-pink-300'
+                                    : 'text-green-300'
                             }`}
+                            style={{
+                                textShadow: '0 2px 4px rgba(0, 0, 0, 0.5)'
+                            }}
                         >
                             {message.content}
-                            <div className="font-swurvy text-xs text-gray-500 mt-1">
+                            <div className="font-swurvy text-xs text-black mt-1">
                                 {message.sender === currentUserId &&
                                 isLatestMessageFromCurrentUser(index)
                                     ? 'Sent'
@@ -98,7 +101,7 @@ const ChatBox = ({ selectedUserId }) => {
                     </div>
                 ))}
             </div>
-            <div className="p-4 bg-gray-900 bg-opacity-90 backdrop-blur-md">
+            <div className="p-4">
                 <div className="flex rounded-lg border-2 border-gray-600 overflow-hidden">
                     <input
                         type="text"

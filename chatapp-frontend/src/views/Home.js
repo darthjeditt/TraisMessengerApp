@@ -7,16 +7,22 @@ function Home() {
     const [selectedUserId, setSelectedUserId] = useState(null);
 
     return (
-        <div className="flex flex-col min-h-[600px] max-h-[600px] bg-gray-900 rounded-xl min-w-[1000px] mx-auto shadow-2xl">
-            <div className='bg-gradient-to-b from-green-500 to-blue-500 rounded-xl'>
-            <Header />
-            </div>
+        <div className="relative flex flex-col min-h-[670px] max-h-[670px] rounded-xl min-w-[1000px] mx-auto shadow-2xl mb-12">
+            <img
+                className="absolute inset-0 w-full h-full object-cover opacity-60 rounded-xl"
+                src="https://i.pinimg.com/564x/6b/de/a3/6bdea3557da87eb2a3e10b53d3df19d4.jpg"
+                alt='background'
+                style={{ zIndex: -1 }}
+            />
+                <Header />
             <div className="flex flex-grow items-center justify-center w-full">
-                <div className="flex h-[600px] w-full bg-gray-800 rounded-bl-xl rounded-br-xl shadow-inner overflow-hidden">
-                    <div className="flex flex-col w-1/6  rounded-bl-xl shadow-lg overflow-y-auto">
+                <div className="flex h-[600px] w-full rounded-bl-xl rounded-br-xl overflow-hidden">
+                    <div className="flex flex-col w-1/6  rounded-bl-xl min-h-[600px] max-h-[600px]">
+
                         <UserList onUserSelect={setSelectedUserId} />
                     </div>
-                    <div className="flex flex-col w-5/6">
+                    <div className="flex flex-col w-5/6 min-h-[600px] max-h-[600px]">
+
                         <ChatBox selectedUserId={selectedUserId} />
                     </div>
                 </div>

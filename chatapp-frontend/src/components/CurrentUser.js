@@ -25,7 +25,7 @@ const CurrentUser = () => {
     }
 
     return (
-        <div className="relative p-4 flex items-center">
+        <div className="relative p-4 flex items-center mb-16">
             <div
                 className="cursor-pointer shadow-xl rounded-full"
                 onClick={handleProfileClick}

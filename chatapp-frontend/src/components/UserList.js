@@ -20,7 +20,7 @@ function UserList({ onUserSelect }) {
     };
 
     return (
-        <div className="flex flex-col  p-4 shadow-lg flex-grow pb-4">
+        <div className="flex flex-col  p-4 shadow-2xl flex-grow pb-4 min-h-[600px] max-h-[600px] bg-black/40">
             {users.map((user) => (
                 <div
                     key={user._id}
