@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { fetchUsers } from '../utils/api';
-import CurrentUserDisplay from './CurrentUser';
 
 function UserList({ onUserSelect }) {
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
+    const scrollableListRef = useRef(null);
 
     useEffect(() => {
         fetchUsers()
@@ -19,8 +19,19 @@ function UserList({ onUserSelect }) {
         onUserSelect(userId);
     };
 
+    // Effect to scroll to the bottom of the list every time the users array changes
+    useEffect(() => {
+        if (scrollableListRef.current) {
+            scrollableListRef.current.scrollTop =
+                scrollableListRef.current.scrollHeight;
+        }
+    }, [users]);
+
     return (
-        <div className="flex flex-col  p-4 shadow-2xl flex-grow pb-4 min-h-[600px] max-h-[600px] bg-black/40">
+        <div
+            className="flex flex-col p-4 shadow-2xl flex-grow pb-4 min-h-[705px] max-h-[705px] bg-black/30 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
+            ref={scrollableListRef}
+        >
             {users.map((user) => (
                 <div
                     key={user._id}
@@ -34,9 +45,6 @@ function UserList({ onUserSelect }) {
                     {user.username}
                 </div>
             ))}
-            <div className="mt-auto">
-                <CurrentUserDisplay />
-            </div>
         </div>
     );
 }

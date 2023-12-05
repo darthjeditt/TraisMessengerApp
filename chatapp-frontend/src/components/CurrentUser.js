@@ -25,7 +25,9 @@ const CurrentUser = () => {
     }
 
     return (
-        <div className="relative p-4 flex items-center mb-16">
+        <div className="relative flex items-center justify-center p-4 bg-black/30 h-full">
+            {' '}
+            {/* Use justify-center for horizontal centering */}
             <div
                 className="cursor-pointer shadow-xl rounded-full"
                 onClick={handleProfileClick}
@@ -35,7 +37,7 @@ const CurrentUser = () => {
                         'https://i.pinimg.com/564x/93/4b/4c/934b4cda17d0621f4a796cb195642a45.jpg'
                     }
                     alt="Profile"
-                    className="rounded-full w-26 h-26 border-4 border-blue-500 mx-auto"
+                    className="rounded-full w-16 h-16 border-4 border-blue-500" // Adjusted the size to w-16 h-16
                 />
             </div>
             {showProfilePopup && (

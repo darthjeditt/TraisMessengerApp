@@ -66,9 +66,11 @@ const ChatBox = ({ selectedUserId }) => {
         return true;
     };
 
+    // ChatBox.js
     return (
-        <div className="flex flex-col h-full rounded-br-xl shadow-xl min-h-[600px] max-h-[600px] bg-black/40">
-            <div className="flex-grow overflow-y-auto p-4">
+        <div className="flex flex-col rounded-br-xl shadow-xl bg-black/40 max-h-[800px] min-h-[800px]">
+            {/* This div will hold the chat messages and will be scrollable */}
+            <div className="flex-grow overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
                 {messages.map((message, index) => (
                     <div
                         key={index}
@@ -101,6 +103,7 @@ const ChatBox = ({ selectedUserId }) => {
                     </div>
                 ))}
             </div>
+            {/* This div is for the input area and should not scroll */}
             <div className="p-4">
                 <div className="flex rounded-lg border-2 border-gray-600 overflow-hidden">
                     <input

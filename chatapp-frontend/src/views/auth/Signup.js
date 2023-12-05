@@ -44,28 +44,23 @@ function Signup() {
             setPasswordError('');
             try {
                 const response = await signup(formData);
-                if (
-                    response &&
-                    response.data &&
-                    response.data.message === 'User registered successfully'
-                ) {
+                if (response) {
                     setShowModal(true);
                     setTimeout(() => {
                         setShowModal(false);
-                        setLoading(false); // Move setLoading here
                         navigate('/login');
-                    }, 1000);
+                    }, 1000); // Delay for showing modal and then navigating
                 } else {
                     console.error('Signup failed:', response);
-                    setLoading(false); // Add setLoading here as well
+                    setLoading(false);
                 }
             } catch (error) {
                 console.error('Error during signup:', error);
-                setLoading(false); // Ensure setLoading is set here too
+                setLoading(false);
             }
         } else {
             setPasswordError('Passwords do not match');
-            setLoading(false); // Set loading to false in case of password mismatch
+            setLoading(false);
         }
     };
 
@@ -81,7 +76,7 @@ function Signup() {
                 </p>
             </div>
             <div className="w-2/3 flex items-center justify-center">
-                <div className="bg-gradient-to-br from-white to-gray-100 p-12 rounded-xl shadow-xl w-2/3 space-y-6 transform transition-transform hover:scale-105">
+                <div className="bg-gradient-to-br from-white to-gray-100 p-12 rounded-xl shadow-xl w-2/3 space-y-6 transform transition-transform">
                     <h2 className="text-3xl font-bold mb-5 text-gray-700 tracking-wide">
                         Create Your Account
                     </h2>
@@ -168,7 +163,7 @@ function Signup() {
                     <div className="absolute inset-0 bg-black opacity-50"></div>
                     <div
                         className={`bg-white p-6 rounded-lg shadow-lg transform transition-transform duration-4000 ${
-                            showModal ? 'rotate-180' : ''
+                            showModal
                         }`}
                     >
                         <h3 className="text-xl font-bold mb-2">Success!</h3>

@@ -7,14 +7,12 @@ import Signup from './views/auth/Signup';
 
 function App() {
     return (
-        <div className="container mx-auto p-4">
+        <div>
             <Routes>
                 <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/home" element={<Home />} />
                 <Route path="/" element={<Login />} />
-                {/* <Route path="/home/chat/:userId" element={<ChatBox />} /> */}
-                {/* Add more routes as needed */}
             </Routes>
         </div>
     );

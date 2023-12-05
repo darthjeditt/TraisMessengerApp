@@ -56,7 +56,7 @@ function Login() {
                 </p>
             </div>
             <div className="w-2/3 flex items-center justify-center">
-                <div className="bg-gradient-to-br from-white to-gray-100 p-12 rounded-xl shadow-xl w-2/3 space-y-6 transform transition-transform hover:scale-105">
+                <div className="bg-gradient-to-br from-white to-gray-100 p-12 rounded-xl shadow-xl w-2/3 space-y-6 transform transition-transform ">
                     <h2 className="text-3xl font-bold mb-5 text-gray-700 tracking-wide">
                         Welcome Back!
                     </h2>

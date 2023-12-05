@@ -1,8 +1,7 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
-@import url('https://fonts.googleapis.com/css2?family=YourFont:wght@400;600&display=swap');
-
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;600&display=swap');
 
 @keyframes slideOut {
     0% {
@@ -35,3 +34,4 @@
 .slide-in {
     animation: slideIn 1s forwards;
 }
+
