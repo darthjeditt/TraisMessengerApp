@@ -7,6 +7,10 @@ function Login() {
         username: '',
         password: ''
     });
+    const [error, setError] = useState({
+        message: '',
+        type: '' // 'emptyFields' or 'invalidCredentials'
+    });
     const navigate = useNavigate();
     const [animationClass, setAnimationClass] = useState('slide-in');
 
@@ -34,12 +38,21 @@ function Login() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Check for empty fields
+        if (!formData.username || !formData.password) {
+            setError({ message: 'Please fill in all fields', type: 'emptyFields' });
+            return;
+        }
+
         try {
             const user = await login(formData);
             if (user) {
                 navigate('/home');
             }
         } catch (error) {
+            // Handle incorrect credentials
+            setError({ message: 'Incorrect username or password', type: 'invalidCredentials' });
             console.error('Error during login:', error);
         }
     };
@@ -51,8 +64,7 @@ function Login() {
                     Chat<span className="text-blue-200">App</span>
                 </h1>
                 <p className="text-lg font-medium">
-                    Connect, converse, and collaborate with friends and
-                    colleagues.
+                    Connect, converse, and collaborate with friends and colleagues.
                 </p>
             </div>
             <div className="w-2/3 flex items-center justify-center">
@@ -62,9 +74,7 @@ function Login() {
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Username
-                            </label>
+                            <label className="block text-gray-600 mb-2">Username</label>
                             <input
                                 type="text"
                                 name="username"
@@ -75,9 +85,7 @@ function Login() {
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Password
-                            </label>
+                            <label className="block text-gray-600 mb-2">Password</label>
                             <input
                                 type="password"
                                 name="password"
@@ -87,6 +95,14 @@ function Login() {
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-shadow hover:shadow-md"
                             />
                         </div>
+
+                        {/* Display error message */}
+                        {error.message && (
+                            <p className={`text-red-500 text-center ${error.type === 'emptyFields' ? 'mb-4' : 'mb-2'}`}>
+                                {error.message}
+                            </p>
+                        )}
+
                         <button
                             type="submit"
                             className="w-full bg-gradient-to-r from-green-500 to-emerald-700 text-white p-3 rounded-lg hover:from-green-500 hover:to-emerald-700 transition-gradient duration-500 shadow-md hover:shadow-lg transform hover:-translate-y-1"

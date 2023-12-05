@@ -9,18 +9,15 @@ function Signup() {
         password: '',
         password2: ''
     });
-    const [passwordError, setPasswordError] = useState('');
+    const [errors, setErrors] = useState({
+        passwordError: '',
+        formError: '',
+        emailError: ''
+    });
     const [showModal, setShowModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [animationClass, setAnimationClass] = useState('slide-in');
-
-    const handleChange = (e) => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        });
-    };
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -37,29 +34,56 @@ function Signup() {
         }, 1000);
     };
 
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-        if (formData.password === formData.password2) {
-            setPasswordError('');
-            try {
-                const response = await signup(formData);
-                if (response) {
-                    setShowModal(true);
-                    setTimeout(() => {
-                        setShowModal(false);
-                        navigate('/login');
-                    }, 1000); // Delay for showing modal and then navigating
-                } else {
-                    console.error('Signup failed:', response);
-                    setLoading(false);
-                }
-            } catch (error) {
-                console.error('Error during signup:', error);
+        // Reset errors
+        setErrors({ passwordError: '', formError: '', emailError: '' });
+
+        // Check for empty fields
+        if (!formData.username || !formData.email || !formData.password || !formData.password2) {
+            setErrors({ ...errors, formError: 'Please fill in all fields' });
+            setLoading(false);
+            return;
+        }
+
+        // Validate email format
+        const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
+        if (!emailRegex.test(formData.email)) {
+            setErrors({ ...errors, emailError: 'Invalid email format' });
+            setLoading(false);
+            return;
+        }
+
+        // Check if passwords match
+        if (formData.password !== formData.password2) {
+            setErrors({ ...errors, passwordError: 'Passwords do not match' });
+            setLoading(false);
+            return;
+        }
+
+        try {
+            const response = await signup(formData);
+            if (response) {
+                setShowModal(true);
+                setTimeout(() => {
+                    setShowModal(false);
+                    navigate('/login');
+                }, 1000); // Delay for showing modal and then navigating
+            } else {
+                setErrors({ ...errors, formError: 'Signup failed, please try again' });
                 setLoading(false);
             }
-        } else {
-            setPasswordError('Passwords do not match');
+        } catch (error) {
+            console.error('Error during signup:', error);
+            setErrors({ ...errors, formError: 'An error occurred during signup' });
             setLoading(false);
         }
     };
@@ -71,8 +95,7 @@ function Signup() {
                     Chat<span className="text-blue-200">App</span>
                 </h1>
                 <p className="text-lg font-medium">
-                    Join our community and start chatting with friends and
-                    colleagues.
+                    Join our community and start chatting with friends and colleagues.
                 </p>
             </div>
             <div className="w-2/3 flex items-center justify-center">
@@ -82,9 +105,7 @@ function Signup() {
                     </h2>
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Username
-                            </label>
+                            <label className="block text-gray-600 mb-2">Username</label>
                             <input
                                 type="text"
                                 name="username"
@@ -95,9 +116,7 @@ function Signup() {
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Email
-                            </label>
+                            <label className="block text-gray-600 mb-2">Email</label>
                             <input
                                 type="email"
                                 name="email"
@@ -106,11 +125,12 @@ function Signup() {
                                 onChange={handleChange}
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-shadow hover:shadow-md"
                             />
+                            {errors.emailError && (
+                                <p className="text-red-500 mt-2">{errors.emailError}</p>
+                            )}
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Password
-                            </label>
+                            <label className="block text-gray-600 mb-2">Password</label>
                             <input
                                 type="password"
                                 name="password"
@@ -121,26 +141,25 @@ function Signup() {
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="block text-gray-600 mb-2">
-                                Confirm Password
-                            </label>
+                            <label className="block text-gray-600 mb-2">Confirm Password</label>
                             <input
                                 type="password"
-                                name="password2" // Change this line
+                                name="password2"
                                 placeholder="Retype Password"
-                                value={formData.password2} // Change this line
+                                value={formData.password2}
                                 onChange={handleChange}
                                 className="w-full p-3 border border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-200 transition-shadow hover:shadow-md"
                             />
-                            {passwordError && (
-                                <p className="text-red-500 mt-2">
-                                    {passwordError}
-                                </p>
+                            {errors.passwordError && (
+                                <p className="text-red-500 mt-2">{errors.passwordError}</p>
                             )}
                         </div>
+                        {errors.formError && (
+                            <p className="text-red-500 text-center mb-4">{errors.formError}</p>
+                        )}
                         <button
                             type="submit"
-                            className="w-full bg-gradient-to-r from-green-500  to-emerald-700 text-white p-3 rounded-lg hover:from-green-500 hover:to-emerald-700 transition-gradient duration-500 shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95"
+                            className="w-full bg-gradient-to-r from-green-500 to-emerald-700 text-white p-3 rounded-lg hover:from-green-500 hover:to-emerald-700 transition-gradient duration-500 shadow-md hover:shadow-lg transform hover:-translate-y-1 active:scale-95"
                         >
                             Sign Up
                         </button>
@@ -157,22 +176,16 @@ function Signup() {
                     </p>
                 </div>
             </div>
-            {/* Stylish Modal with Page Turn Effect */}
+            {/* Modal and Loading Screen */}
             {showModal && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="absolute inset-0 bg-black opacity-50"></div>
-                    <div
-                        className={`bg-white p-6 rounded-lg shadow-lg transform transition-transform duration-4000 ${
-                            showModal
-                        }`}
-                    >
+                    <div className="bg-white p-6 rounded-lg shadow-lg transform transition-transform">
                         <h3 className="text-xl font-bold mb-2">Success!</h3>
                         <p>{formData.username} has successfully signed up!</p>
                     </div>
                 </div>
             )}
-
-            {/* Loading Screen */}
             {loading && (
                 <div className="fixed inset-0 flex items-center justify-center z-50">
                     <div className="loader"></div>
