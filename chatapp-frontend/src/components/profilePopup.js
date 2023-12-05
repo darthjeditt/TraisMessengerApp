@@ -1,15 +1,13 @@
 import React from 'react';
 import { useNavigate } from "react-router-dom";
 
-// Popup component for displaying user profile and logout functionality
+// Main component for the profile popup, displaying user details and providing logout functionality
 const ProfilePopup = ({ user, onClose }) => {
     const navigate = useNavigate();
 
-    // Handles user logout process
+    // Handles the logout process
     const handleLogout = () => {
-        // Perform logout operations, e.g., clear tokens
-        // localStorage.removeItem('token');
-        // Redirect to the login screen
+        // Redirects the user to the login screen after logout
         navigate('/login', { replace: true });
     };
 
@@ -18,23 +16,23 @@ const ProfilePopup = ({ user, onClose }) => {
             <div className="bg-white bg-opacity-10 border border-gray-300 rounded-2xl p-6 w-96 shadow-2xl backdrop-filter backdrop-blur-lg">
                 <div className="flex justify-between items-center mb-4">
                     <h2 className="text-xl font-bold text-white">
-                        {user.username}
+                        {user.username} {/* Displaying the username */}
                     </h2>
-                    <CloseButton onClick={onClose} />
+                    <CloseButton onClick={onClose} /> {/* Close button for the popup */}
                 </div>
-                <UserProfileSection user={user} />
-                <LogoutButton onClick={handleLogout} />
+                <UserProfileSection user={user} /> {/* Section displaying user profile details */}
+                <LogoutButton onClick={handleLogout} /> {/* Logout button */}
             </div>
         </div>
     );
 };
 
+// Button component for closing the profile popup
 const CloseButton = ({ onClick }) => (
     <button
         onClick={onClick}
         className="p-2 rounded-full bg-red-500 bg-opacity-75 text-white hover:bg-red-700 transition duration-300"
     >
-        {/* SVG for close icon */}
         <svg
             xmlns="http://www.w3.org/2000/svg"
             className="h-6 w-6"
@@ -52,6 +50,7 @@ const CloseButton = ({ onClick }) => (
     </button>
 );
 
+// Component to display user profile information
 const UserProfileSection = ({ user }) => (
     <div className="flex items-center mb-4">
         <img
@@ -70,6 +69,7 @@ const UserProfileSection = ({ user }) => (
     </div>
 );
 
+// Logout button component
 const LogoutButton = ({ onClick }) => (
     <button
         onClick={onClick}

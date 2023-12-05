@@ -1,6 +1,6 @@
 module.exports = {
     content: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
-    darkMode: 'media', // or 'media' or 'class'
+    darkMode: 'media',
     theme: {
         extend: {
             fontFamily: {
@@ -8,8 +8,8 @@ module.exports = {
             },
             scrollbar: ['rounded'],
             colors: {
-                'scroll-thumb': 'rgba(79, 70, 229, 0.5)', // Semi-transparent thumb
-                'scroll-thumb-hover': 'rgba(79, 70, 229, 0.6)' // Slightly darker on hover
+                'scroll-thumb': 'rgba(79, 70, 229, 0.5)',
+                'scroll-thumb-hover': 'rgba(79, 70, 229, 0.6)'
             },
             backdropFilter: {
                 none: 'none',
@@ -19,7 +19,7 @@ module.exports = {
     },
     variants: {
         extend: {
-            backdropFilter: ['responsive'] // enable responsive variants as needed
+            backdropFilter: ['responsive'] 
         }
     },
     plugins: [require('tailwind-scrollbar')]
