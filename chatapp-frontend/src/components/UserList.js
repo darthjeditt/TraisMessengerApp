@@ -1,29 +1,37 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { fetchUsers } from '../utils/api';
 
-function UserList({ onUserSelect }) {
+// Component to display a list of users
+const UserList = ({ onUserSelect }) => {
     const [users, setUsers] = useState([]);
     const [selectedUserId, setSelectedUserId] = useState(null);
     const scrollableListRef = useRef(null);
 
+    // Fetch users and update state
     useEffect(() => {
-        fetchUsers()
-            .then((fetchedUsers) => {
+        const getUsers = async () => {
+            try {
+                const fetchedUsers = await fetchUsers();
                 setUsers(fetchedUsers);
-            })
-            .catch((error) => console.error('Error fetching users:', error));
+            } catch (error) {
+                console.error('Error fetching users:', error);
+            }
+        };
+
+        getUsers();
     }, []);
 
+    // Handle user selection
     const handleUserClick = (userId) => {
         setSelectedUserId(userId);
         onUserSelect(userId);
     };
 
-    // Effect to scroll to the bottom of the list every time the users array changes
+    // Scroll to the bottom of the list when users are updated
     useEffect(() => {
-        if (scrollableListRef.current) {
-            scrollableListRef.current.scrollTop =
-                scrollableListRef.current.scrollHeight;
+        const scrollableList = scrollableListRef.current;
+        if (scrollableList) {
+            scrollableList.scrollTop = scrollableList.scrollHeight;
         }
     }, [users]);
 
@@ -33,20 +41,27 @@ function UserList({ onUserSelect }) {
             ref={scrollableListRef}
         >
             {users.map((user) => (
-                <div
+                <UserItem
                     key={user._id}
-                    className={`font-swurvy text-center p-2 my-2 rounded-lg font-semibold text-lg ${
-                        user._id === selectedUserId
-                            ? 'bg-blue-900'
-                            : 'hover:bg-gray-600'
-                    } cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 text-white`}
+                    user={user}
+                    isSelected={user._id === selectedUserId}
                     onClick={() => handleUserClick(user._id)}
-                >
-                    {user.username}
-                </div>
+                />
             ))}
         </div>
     );
-}
+};
+
+// Component for individual user item
+const UserItem = ({ user, isSelected, onClick }) => (
+    <div
+        className={`font-swurvy text-center p-2 my-2 rounded-lg font-semibold text-lg ${
+            isSelected ? 'bg-blue-900' : 'hover:bg-gray-600'
+        } cursor-pointer transition duration-300 ease-in-out transform hover:scale-105 text-white`}
+        onClick={onClick}
+    >
+        {user.username}
+    </div>
+);
 
 export default UserList;

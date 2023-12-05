@@ -2,49 +2,48 @@ import React, { useState, useEffect } from 'react';
 import ProfilePopup from './profilePopup';
 import { getCurrentUser } from '../utils/api';
 
-const CurrentUser = () => {
-    const [currentUser, setCurrentUser] = useState(null);
-    const [showProfilePopup, setShowProfilePopup] = useState(false);
+// Component to display the current user's profile and handle profile popup
+const UserProfile = () => {
+    const [user, setUser] = useState(null);
+    const [isProfilePopupVisible, setProfilePopupVisibility] = useState(false);
 
+    // Effect to fetch and set the current user's details
     useEffect(() => {
-        // Fetch current user details and set state
-        const fetchCurrentUser = async () => {
+        const fetchAndSetCurrentUser = async () => {
             const userDetails = await getCurrentUser();
-            setCurrentUser(userDetails);
+            setUser(userDetails);
         };
 
-        fetchCurrentUser();
+        fetchAndSetCurrentUser();
     }, []);
 
-    const handleProfileClick = () => {
-        setShowProfilePopup(!showProfilePopup);
+    // Toggles the visibility of the profile popup
+    const toggleProfilePopup = () => {
+        setProfilePopupVisibility(!isProfilePopupVisible);
     };
 
-    if (!currentUser) {
+    // Display loading state until user data is fetched
+    if (!user) {
         return <div>Loading...</div>;
     }
 
     return (
         <div className="relative flex items-center justify-center p-4 bg-black/30 h-full">
-            {' '}
-            {/* Use justify-center for horizontal centering */}
             <div
                 className="cursor-pointer shadow-xl rounded-full"
-                onClick={handleProfileClick}
+                onClick={toggleProfilePopup}
             >
                 <img
-                    src={
-                        'https://i.pinimg.com/564x/93/4b/4c/934b4cda17d0621f4a796cb195642a45.jpg'
-                    }
-                    alt="Profile"
-                    className="rounded-full w-16 h-16 border-4 border-blue-500" // Adjusted the size to w-16 h-16
+                    src="https://i.pinimg.com/564x/93/4b/4c/934b4cda17d0621f4a796cb195642a45.jpg"
+                    alt="User Profile"
+                    className="rounded-full w-16 h-16 border-4 border-blue-500"
                 />
             </div>
-            {showProfilePopup && (
+            {isProfilePopupVisible && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex justify-center items-center">
                     <ProfilePopup
-                        user={currentUser}
-                        onClose={() => setShowProfilePopup(false)}
+                        user={user}
+                        onClose={() => setProfilePopupVisibility(false)}
                     />
                 </div>
             )}
@@ -52,4 +51,4 @@ const CurrentUser = () => {
     );
 };
 
-export default CurrentUser;
+export default UserProfile;

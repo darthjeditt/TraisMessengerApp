@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { getCurrentUser, fetchChatHistory, sendMessage } from '../utils/api';
 
+// ChatBox component for handling chat interactions
 const ChatBox = ({ selectedUserId }) => {
     const [currentUserId, setCurrentUserId] = useState(null);
     const [messages, setMessages] = useState([]);
     const [newMessage, setNewMessage] = useState('');
 
+    // Load current user's details
     useEffect(() => {
         const loadCurrentUser = async () => {
             try {
@@ -19,15 +21,13 @@ const ChatBox = ({ selectedUserId }) => {
         loadCurrentUser();
     }, []);
 
+    // Load chat history when users change
     useEffect(() => {
         const loadChatHistory = async () => {
             if (currentUserId && selectedUserId) {
                 try {
-                    const response = await fetchChatHistory(
-                        currentUserId,
-                        selectedUserId
-                    );
-                    setMessages(response.data || []);
+                    const chatHistory = await fetchChatHistory(currentUserId, selectedUserId);
+                    setMessages(chatHistory.data || []);
                 } catch (error) {
                     console.error('Error fetching chat history:', error);
                     setMessages([]);
@@ -38,18 +38,12 @@ const ChatBox = ({ selectedUserId }) => {
         loadChatHistory();
     }, [currentUserId, selectedUserId]);
 
+    // Handle sending a new message
     const handleSendMessage = async () => {
         if (newMessage.trim()) {
             try {
                 await sendMessage(newMessage, currentUserId, selectedUserId);
-                setMessages([
-                    ...messages,
-                    {
-                        content: newMessage,
-                        sender: currentUserId,
-                        timestamp: new Date().toISOString()
-                    }
-                ]);
+                setMessages([...messages, { content: newMessage, sender: currentUserId, timestamp: new Date().toISOString() }]);
                 setNewMessage('');
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -57,16 +51,11 @@ const ChatBox = ({ selectedUserId }) => {
         }
     };
 
+    // Check if the latest message is from the current user
     const isLatestMessageFromCurrentUser = (index) => {
-        for (let i = messages.length - 1; i > index; i--) {
-            if (messages[i].sender === currentUserId) {
-                return false;
-            }
-        }
-        return true;
+        return messages.slice(index + 1).every(msg => msg.sender !== currentUserId);
     };
 
-    // ChatBox.js
     return (
         <div className="flex flex-col rounded-br-xl shadow-xl bg-black/40 max-h-[800px] min-h-[800px]">
             {/* This div will hold the chat messages and will be scrollable */}
