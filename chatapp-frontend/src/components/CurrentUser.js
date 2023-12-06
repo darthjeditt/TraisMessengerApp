@@ -28,15 +28,15 @@ const UserProfile = () => {
     }
 
     return (
-        <div className="relative flex items-center justify-center p-4 bg-black/30 h-full">
+        <div className="relative flex items-center justify-center p-4 bg-black/30 h-1/4">
             <div
-                className="cursor-pointer shadow-xl rounded-full"
+                className="cursor-pointer shadow-xl rounded-full absolute inset-0"
                 onClick={toggleProfilePopup}
             >
                 <img
                     src="https://i.pinimg.com/564x/93/4b/4c/934b4cda17d0621f4a796cb195642a45.jpg"
                     alt="User Profile"
-                    className="rounded-full w-16 h-16 border-4 border-blue-500"
+                    className="rounded-full w-32 h-32 border-8 border-blue-500 absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2" 
                 />
             </div>
             {isProfilePopupVisible && (

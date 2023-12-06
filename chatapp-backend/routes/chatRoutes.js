@@ -9,7 +9,7 @@ module.exports = function (io) {
      * Route to get all chat messages.
      * Authentication middleware is used to ensure that the user is logged in.
      */
-    router.get('/messages', isAuthenticated, chatController.getAllMessages);
+    router.get('/messages', isAuthenticated, chatController.fetchAllMessages);
 
     /**
      * Route to add a new chat message.
@@ -23,7 +23,7 @@ module.exports = function (io) {
      * Route to get the chat history between two users.
      * URL parameters are used to specify the current user and the selected user.
      */
-    router.get('/history/:currentUserId/:selectedUserId', isAuthenticated, chatController.getChatHistory);
+    router.get('/history/:currentUserId/:selectedUserId', isAuthenticated, chatController.fetchChatHistory);
 
     return router;
 };

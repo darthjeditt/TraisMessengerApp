@@ -67,6 +67,7 @@ const Signup = () => {
         }
 
         // Email format validation
+        // eslint-disable-next-line
         const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
         if (!emailRegex.test(formData.email)) {
             setErrors({ ...errors, emailError: 'Invalid email format' });

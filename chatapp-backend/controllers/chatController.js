@@ -1,7 +1,7 @@
 // chatController.js
 // This module handles the chat-related operations like fetching and posting messages.
 
-const MessageModel = require('../models/messageModel');
+const MessageModel = require('../models/msgModel');
 const mongoose = require('mongoose');
 
 /**
