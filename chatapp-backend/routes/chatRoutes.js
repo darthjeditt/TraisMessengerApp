@@ -1,24 +1,29 @@
 const express = require('express');
-const router = express.Router();
-const {
-    getAllMessages,
-    postMessage,
-    getChatHistory
-} = require('../controllers/chatController');
+const chatController = require('../controllers/chatController');
 const isAuthenticated = require('../middleware/authMiddleware');
 
 module.exports = function (io) {
-    // Get all chat messages
-    router.get('/messages', isAuthenticated, getAllMessages);
+    const router = express.Router();
 
-    // Add a new chat message
-    router.post('/messages', isAuthenticated, (req, res) => postMessage(req, res, io));
+    /**
+     * Route to get all chat messages.
+     * Authentication middleware is used to ensure that the user is logged in.
+     */
+    router.get('/messages', isAuthenticated, chatController.getAllMessages);
 
-    router.get(
-        '/history/:currentUserId/:selectedUserId',
-        isAuthenticated,
-        getChatHistory
-    );
+    /**
+     * Route to add a new chat message.
+     * Includes the socket.io instance for real-time communication.
+     */
+    router.post('/messages', isAuthenticated, (req, res) => {
+        chatController.postMessage(req, res, io);
+    });
+
+    /**
+     * Route to get the chat history between two users.
+     * URL parameters are used to specify the current user and the selected user.
+     */
+    router.get('/history/:currentUserId/:selectedUserId', isAuthenticated, chatController.getChatHistory);
 
     return router;
 };
