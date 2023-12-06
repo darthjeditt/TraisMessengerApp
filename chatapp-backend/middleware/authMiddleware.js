@@ -1,39 +1,29 @@
 const jwt = require('jsonwebtoken');
-const dotenv = require('dotenv')
-// const User = require('../models/userMdl');
+const dotenv = require('dotenv');
 
 dotenv.config();
 
+/**
+ * Middleware to authenticate a user using a JWT token.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
 const isAuthenticated = (req, res, next) => {
-    try {
-        const authHeader = req.header('Authorization');
-        if (!authHeader) {
-            return res.status(401).send({ error: 'Authentication required.' });
-        }
+    const authHeader = req.header('Authorization') || req.header('x-auth-token');
 
-        const token = authHeader.replace('Bearer ', '');
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Replace 'YOUR_SECRET_KEY' with your actual secret key
+    if (!authHeader) {
+        return res.status(401).send({ message: 'No authentication token, access denied.' });
+    }
+
+    try {
+        const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7) : authHeader;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
         req.user = decoded;
         next();
     } catch (error) {
-        res.status(401).send({ error: 'Authentication failed.' });
-    }
-};
-
-module.exports = (req, res, next) => {
-    const token = req.header('x-auth-token'); // Assuming the token is sent in the 'x-auth-token' header
-
-    if (!token) {
-        return res.status(401).send('No token, authorization denied');
-    }
-
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET); // Use the same secret key as in the login route
-        req.user = decoded;
-        next();
-    } catch (err) {
-        res.status(401).send('Token is not valid');
+        res.status(401).send({ message: 'Invalid token, access denied.' });
     }
 };
 
