@@ -1,13 +1,19 @@
 {
-  "name": "python-scripts",
+  "name": "chatapp-backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Backend server for Trais Messenger App",
+  "main": "server.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "start": "node chatapp-backend/server.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "chat",
+    "backend",
+    "express",
+    "socket.io"
+  ],
+  "author": "Trai Torti",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
