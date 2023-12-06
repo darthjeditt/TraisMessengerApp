@@ -26,7 +26,10 @@ const ChatBox = ({ selectedUserId }) => {
         const loadChatHistory = async () => {
             if (currentUserId && selectedUserId) {
                 try {
-                    const chatHistory = await fetchChatHistory(currentUserId, selectedUserId);
+                    const chatHistory = await fetchChatHistory(
+                        currentUserId,
+                        selectedUserId
+                    );
                     setMessages(chatHistory.data || []);
                 } catch (error) {
                     console.error('Error fetching chat history:', error);
@@ -43,7 +46,14 @@ const ChatBox = ({ selectedUserId }) => {
         if (newMessage.trim()) {
             try {
                 await sendMessage(newMessage, currentUserId, selectedUserId);
-                setMessages([...messages, { content: newMessage, sender: currentUserId, timestamp: new Date().toISOString() }]);
+                setMessages([
+                    ...messages,
+                    {
+                        content: newMessage,
+                        sender: currentUserId,
+                        timestamp: new Date().toISOString()
+                    }
+                ]);
                 setNewMessage('');
             } catch (error) {
                 console.error('Error sending message:', error);
@@ -53,12 +63,14 @@ const ChatBox = ({ selectedUserId }) => {
 
     // Check if the latest message is from the current user
     const isLatestMessageFromCurrentUser = (index) => {
-        return messages.slice(index + 1).every(msg => msg.sender !== currentUserId);
+        return messages
+            .slice(index + 1)
+            .every((msg) => msg.sender !== currentUserId);
     };
 
     return (
         <div className="flex flex-col rounded-br-xl shadow-xl bg-black/40 max-h-[800px] min-h-[800px]">
-            <div className="flex-grow overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
+            <div className="flex-grow overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent hover:scrollbar-thumb-blue-600 scrollbar-thumb-rounded">
                 {messages.map((message, index) => (
                     <div
                         key={index}
@@ -99,6 +111,12 @@ const ChatBox = ({ selectedUserId }) => {
                         onChange={(e) => setNewMessage(e.target.value)}
                         placeholder="Type a message..."
                         className="flex-grow p-2 bg-transparent text-white placeholder-gray-400 focus:outline-none"
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSendMessage();
+                            }
+                        }}
                     />
                     <button
                         onClick={handleSendMessage}

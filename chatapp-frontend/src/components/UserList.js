@@ -37,7 +37,7 @@ const UserList = ({ onUserSelect }) => {
 
     return (
         <div
-            className="flex flex-col p-4 shadow-2xl flex-grow pb-4 min-h-[705px] max-h-[705px] bg-black/30 overflow-auto scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-transparent hover:scrollbar-thumb-gray-500"
+            className="flex flex-col p-4 shadow-2xl flex-grow pb-4 min-h-[705px] max-h-[705px] bg-black/30"
             ref={scrollableListRef}
         >
             {users.map((user) => (

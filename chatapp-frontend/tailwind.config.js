@@ -19,8 +19,8 @@ module.exports = {
     },
     variants: {
         extend: {
-            backdropFilter: ['responsive'] 
+            backdropFilter: ['responsive']
         }
     },
-    plugins: [require('tailwind-scrollbar')]
+    plugins: [require('tailwind-scrollbar')({ nocompatible: true })]
 };

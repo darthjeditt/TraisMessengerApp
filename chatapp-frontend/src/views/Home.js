@@ -53,7 +53,7 @@ const ContentArea = ({ selectedUserId, onUserSelect }) => (
 // User area component displaying the list of users and the current user profile
 const UserArea = ({ onUserSelect }) => (
     <div className="flex flex-col w-1/6 rounded-bl-xl bg-black/30">
-        <div className="flex-grow overflow-auto">
+        <div className="flex-grow overflow-auto scrollbar-thin scrollbar-thumb-blue-300 scrollbar-track-transparent hover:scrollbar-thumb-blue-600 scrollbar-thumb-rounded">
             <UserList onUserSelect={onUserSelect} />
         </div>
         <CurrentUser />
