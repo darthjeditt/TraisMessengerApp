@@ -116,7 +116,7 @@ export const sendMessage = async (content, senderId, receiverId) => {
 export const updateUserStatus = async (userId, status) => {
     try {
         await api.put(
-            `/users/${userId}/status`,
+            `/users/${userId}/online`,
             { online: status },
             {
                 headers: {

@@ -26,7 +26,7 @@ router.get('/', async (req, res) => {
 router.get('/me', isAuthenticated, userController.getCurrentUser);
 
 // Route to update a user's online status
-router.put('/:userId/status', isAuthenticated, async (req, res) => {
+router.put('/:userId/online', isAuthenticated, async (req, res) => {
     try {
         const { userId } = req.params;
         const { online } = req.body;
