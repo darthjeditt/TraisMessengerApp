@@ -65,7 +65,7 @@ const fetchChatHistory = async (req, res) => {
         });
 
         if (!messages.length) {
-            return res.status(404).json({ message: 'No chat history found.' });
+            return res.status(200).json({ message: 'No chat history found.' });
         }
 
         res.status(200).json({ data: messages });

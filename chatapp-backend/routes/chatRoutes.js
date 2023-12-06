@@ -16,7 +16,7 @@ module.exports = function (io) {
      * Includes the socket.io instance for real-time communication.
      */
     router.post('/messages', isAuthenticated, (req, res) => {
-        chatController.postMessage(req, res, io);
+        chatController.sendMessage(req, res, io);
     });
 
     /**
