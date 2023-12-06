@@ -23,12 +23,38 @@ Trai's Messenger App is a modern, real-time chat application designed to provide
 
 ## Setup Instructions
 
-1. Clone the repository: `git clone https://github.com/darthjeditt/chatApp.git`
-2. Install dependencies:
-   - For backend: `cd chatapp-backend && npm install`
-   - For frontend: `cd chatapp-frontend && npm install`
-3. Start the server: `node chatapp-backend/server.js or cd chatapp-backend && npm start`
-4. Run the frontend: `cd chatapp-frontend && npm start`
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/darthjeditt/chatApp.git
+   ```
+
+2. **Install dependencies**:
+   - For backend: 
+     ```bash
+     cd chatapp-backend && npm install
+     ```
+   - For frontend: 
+     ```bash
+     cd chatapp-frontend && npm install
+     ```
+
+3. **Generate JWT Secret**:
+   - Run `node chatapp-backend/genSecret.js` to generate a JWT secret code.
+   - Create a `.env` file in the `chatapp` directory.
+   - Add the generated JWT secret code to the `.env` file as follows:
+     ```
+     JWT_SECRET=your_generated_secret
+     ```
+
+4. **Start the server**:
+   ```bash
+   node chatapp-backend/server.js OR cd chatapp-backend && npm start
+   ```
+
+5. **Run the frontend**:
+   ```bash
+   cd chatapp-frontend && npm start
+   ```
 
 ## Usage
 
